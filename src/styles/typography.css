@@ -11,10 +11,13 @@
     h4,
     th {
       @apply mb-3 text-foreground;
+      font-family: 'Playfair Display', Georgia, serif;
     }
 
-    h3 {
-      @apply font-sriracha italic;
+    em,
+    i {
+      font-family: inherit;
+      font-style: italic;
     }
 
     p,

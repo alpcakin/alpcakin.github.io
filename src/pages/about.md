@@ -3,28 +3,14 @@ layout: ../layouts/AboutLayout.astro
 title: "About"
 ---
 
-Bienvenido a mi rincón digital. Soy un **desarrollador** y **estudiante** apasionado por la tecnología, los videojuegos y construir cosas que vivan en internet.
+I'm **Alp Çakın** — a Computer Science Engineering student at the University of Pécs, Hungary — originally from Turkey — graduating in January 2027. But "student" is just one layer of what I do.
 
-## ¿Quién soy?
+I'm a funded forex trader with The5ers, running a discretionary system on short-term timeframes. Alongside that, I'm building toward a career in data analysis and data engineering, with a strong pull toward the intersection of finance and technology.
 
-Me llamo Andrés, y desde que recuerdo siempre tuve curiosidad por entender cómo funcionan las cosas — desde desarmar juguetes de niño hasta desarmar código ajeno a las 2 AM. Actualmente estudio ingeniería mientras desarrollo proyectos que me retan a aprender algo nuevo cada día.
+On alpcakin.com, I write about the things I'm genuinely trying to understand: macroeconomics, country-level financial crises, market dynamics, and the quantitative side of how markets behave. Not academic summaries — my own thinking, worked through in public.
 
-Cuando no estoy programando, probablemente estoy en algún mundo virtual explorando mapas, completando misiones o compitiendo online. Los videojuegos no solo son mi hobby, también me enseñaron a resolver problemas, trabajar en equipo y, sobre todo, a no rendirme después del intento #847.
+I'm comfortable moving between building systems and analyzing data, which is where most of my interesting work lives.
 
-## Lo que hago
+---
 
-- **Desarrollo web** — Me encanta construir experiencias web modernas con tecnologías como Astro, React, TypeScript y todo lo que el ecosistema JavaScript tiene para ofrecer.
-- **Open Source** — Creo en el poder del código abierto. Puedes encontrar mis proyectos en [GitHub](https://github.com/0xdres/).
-- **Aprendizaje continuo** — Siempre estoy explorando nuevas herramientas, frameworks y conceptos. La tecnología evoluciona rápido y me gusta ir al ritmo.
-
-## Gaming
-
-Los videojuegos son parte de mi ADN. Desde RPGs épicos hasta shooters competitivos, disfruto prácticamente cualquier género. Es ese espacio donde la creatividad se encuentra con la estrategia y la diversión pura.
-
-## Este blog
-
-**Devosfera** nació como un espacio para documentar mi viaje como desarrollador, compartir lo que aprendo y conectar con personas que comparten las mismas pasiones. Aquí encontrarás posts sobre desarrollo, tecnología, y alguna que otra reflexión random de madrugada.
-
-Si quieres conectar, no dudes en encontrarme en [GitHub](https://github.com/0xdres/), [X](https://x.com/avdyen) o [LinkedIn](https://www.linkedin.com/in/avdyan/). Siempre es bueno conocer gente cool de la comunidad.
-
-> _"El código es poesía, pero con más puntos y comas."_ — Yo, probablemente
+[GitHub](https://github.com/alpcakin) · [Substack](https://substack.com/@alpcakin) · [LinkedIn](https://www.linkedin.com/in/alp-cakin) · [alpcakin16@gmail.com](mailto:alpcakin16@gmail.com)
