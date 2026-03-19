@@ -14,13 +14,13 @@ export default async post => {
           flexDirection: "column",
           alignItems: "flex-start",
           justifyContent: "space-between",
-          backgroundColor: "#0f172a", // Fondo oscuro (Slate 900)
+          backgroundColor: "#0f172a",
           color: "white",
           padding: "80px",
           position: "relative",
         },
         children: [
-          // 1. Elemento Decorativo de Fondo (Se pinta primero = queda al fondo)
+          // Background decorative element
           {
             type: "div",
             props: {
@@ -38,7 +38,7 @@ export default async post => {
             },
           },
 
-          // 2. Cabecera: Nombre del sitio (Se pinta encima del fondo)
+          // Site name header
           {
             type: "div",
             props: {
@@ -65,7 +65,7 @@ export default async post => {
             },
           },
 
-          // 3. Contenido Principal: Título del Post
+          // Post title
           {
             type: "div",
             props: {
@@ -73,7 +73,6 @@ export default async post => {
                 display: "flex",
                 flexDirection: "column",
                 width: "100%",
-                // zIndex eliminado (no es necesario por el orden de los hijos)
               },
               children: {
                 type: "h1",
@@ -97,7 +96,7 @@ export default async post => {
             },
           },
 
-          // 4. Pie de página: Autor
+          // Author footer
           {
             type: "div",
             props: {
@@ -105,10 +104,9 @@ export default async post => {
                 display: "flex",
                 alignItems: "center",
                 width: "100%",
-                // zIndex eliminado
               },
               children: [
-                // Línea separadora decorativa
+                // Decorative separator
                 {
                   type: "div",
                   props: {
@@ -128,7 +126,7 @@ export default async post => {
                       color: "#cbd5e1",
                     },
                     children: [
-                      "Escrito por ",
+                      "Written by ",
                       {
                         type: "span",
                         props: {
@@ -154,7 +152,7 @@ export default async post => {
       height: 630,
       embedFont: true,
       fonts: await loadGoogleFonts(
-        post.data.title + post.data.author + SITE.title + "Escritopor" + ".com"
+        post.data.title + post.data.author + SITE.title + "Writtenby" + ".com"
       ),
     }
   );

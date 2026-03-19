@@ -3,7 +3,7 @@ import { SITE } from "@/config";
 import loadGoogleFonts from "../loadGoogleFont";
 
 export default async () => {
-  // Obtenemos el hostname limpio (ej: midominio.com)
+  // Clean hostname (e.g. alpcakin.com)
   const hostname = new URL(SITE.website).hostname;
 
   return satori(
@@ -17,15 +17,15 @@ export default async () => {
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          backgroundColor: "#0f172a", // Fondo oscuro (Slate 900)
+          backgroundColor: "#0f172a",
           backgroundImage:
-            "radial-gradient(circle at 25px 25px, #1e293b 2%, transparent 0%), radial-gradient(circle at 75px 75px, #1e293b 2%, transparent 0%)", // Patrón sutil de puntos (opcional, si no te gusta bórralo)
+            "radial-gradient(circle at 25px 25px, #1e293b 2%, transparent 0%), radial-gradient(circle at 75px 75px, #1e293b 2%, transparent 0%)",
           backgroundSize: "100px 100px",
           color: "white",
           position: "relative",
         },
         children: [
-          // 1. Gradiente Decorativo Superior Derecho (Púrpura)
+          // Top-right decorative gradient
           {
             type: "div",
             props: {
@@ -35,14 +35,14 @@ export default async () => {
                 right: "-50px",
                 width: "600px",
                 height: "600px",
-                background: "linear-gradient(140deg, #a855f7, #ec4899)", // Purple a Pink
+                background: "linear-gradient(140deg, #a855f7, #ec4899)",
                 filter: "blur(120px)",
                 opacity: 0.3,
                 borderRadius: "100%",
               },
             },
           },
-          // 2. Gradiente Decorativo Inferior Izquierdo (Indigo)
+          // Bottom-left decorative gradient
           {
             type: "div",
             props: {
@@ -52,7 +52,7 @@ export default async () => {
                 left: "-50px",
                 width: "500px",
                 height: "500px",
-                background: "linear-gradient(140deg, #3b82f6, #6366f1)", // Blue a Indigo
+                background: "linear-gradient(140deg, #3b82f6, #6366f1)",
                 filter: "blur(120px)",
                 opacity: 0.3,
                 borderRadius: "100%",
@@ -60,7 +60,7 @@ export default async () => {
             },
           },
 
-          // 3. Contenedor Central
+          // Center content
           {
             type: "div",
             props: {
@@ -74,12 +74,12 @@ export default async () => {
                 width: "90%",
               },
               children: [
-                // Título del Sitio (HERO)
+                // Site title
                 {
                   type: "h1",
                   props: {
                     style: {
-                      fontSize: 100, // Muy grande
+                      fontSize: 100,
                       fontWeight: 900,
                       letterSpacing: "-2px",
                       color: "white",
@@ -91,28 +91,28 @@ export default async () => {
                   },
                 },
 
-                // Línea separadora pequeña
+                // Separator line
                 {
                   type: "div",
                   props: {
                     style: {
                       width: "80px",
                       height: "6px",
-                      backgroundColor: "#818cf8", // Acento Indigo
+                      backgroundColor: "#818cf8",
                       borderRadius: "4px",
                       marginBottom: "30px",
                     },
                   },
                 },
 
-                // Descripción del sitio
+                // Site description
                 {
                   type: "p",
                   props: {
                     style: {
                       fontSize: 36,
-                      color: "#cbd5e1", // Slate 300 (gris claro)
-                      maxWidth: "80%", // Para que no se estire demasiado a los lados
+                      color: "#cbd5e1",
+                      maxWidth: "80%",
                       margin: 0,
                       lineHeight: 1.4,
                       fontWeight: 400,
@@ -124,7 +124,7 @@ export default async () => {
             },
           },
 
-          // 4. Footer: URL del sitio (Pill design)
+          // Footer: site URL pill
           {
             type: "div",
             props: {
@@ -144,7 +144,7 @@ export default async () => {
                 props: {
                   style: {
                     fontSize: 24,
-                    color: "#94a3b8", // Texto sutil
+                    color: "#94a3b8",
                     fontWeight: 600,
                     letterSpacing: "1px",
                   },
