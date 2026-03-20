@@ -8,6 +8,7 @@ tags:
   - monetary-policy
   - central-banking
   - economics
+ogImage: /images/japan_debt_to_gdp.png
 featured: false
 draft: false
 ---

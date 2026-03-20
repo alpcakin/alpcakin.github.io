@@ -9,6 +9,7 @@ tags:
   - monetary-policy
   - economics
   - united-states
+ogImage: /images/07_comparison_misery.png
 featured: true
 draft: false
 ---

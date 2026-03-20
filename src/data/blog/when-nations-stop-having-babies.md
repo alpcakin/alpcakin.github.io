@@ -8,6 +8,7 @@ tags:
   - population
   - economics
   - policy
+ogImage: /images/fertility_map_2023.png
 featured: false
 draft: false
 ---

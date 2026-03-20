@@ -9,6 +9,7 @@ tags:
   - emerging-markets
   - currency
   - economics
+ogImage: /images/bist_normalized_comparison.png
 featured: false
 draft: false
 ---

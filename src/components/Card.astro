@@ -11,7 +11,8 @@ type Props = {
 
 const { variant: Heading = "h2", featured = false, id, data, filePath } = Astro.props;
 
-const { title, description, ...props } = data;
+const { title, description, ogImage, ...props } = data;
+const imageUrl = typeof ogImage === "string" ? ogImage : undefined;
 ---
 
 <li class:list={["group border-b border-border/30 py-6 last:border-0", featured && "featured-post"]}>
@@ -23,6 +24,12 @@ const { title, description, ...props } = data;
     >
       <!-- Expand clickable area -->
       <span class="absolute -inset-x-1 -inset-y-5 z-10" aria-hidden="true"></span>
+
+      {imageUrl && (
+        <div class="card-image-wrap">
+          <img src={imageUrl} alt={String(title)} class="card-image" loading="lazy" />
+        </div>
+      )}
 
       <div class="flex items-baseline justify-between gap-6">
         <Heading class="editorial-title text-foreground transition-colors duration-200 group-hover:text-accent leading-snug">
@@ -44,6 +51,30 @@ const { title, description, ...props } = data;
 </li>
 
 <style>
+  .card-image-wrap {
+    position: relative;
+    z-index: 20;
+    margin-bottom: 0.875rem;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--color-border) 40%, transparent);
+    aspect-ratio: 16 / 7;
+  }
+
+  .card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    transition: transform 0.35s ease, opacity 0.25s ease;
+    opacity: 0.88;
+  }
+
+  .group:hover .card-image {
+    transform: scale(1.025);
+    opacity: 1;
+  }
+
   .editorial-title {
     font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
     font-size: 1.0625rem;
