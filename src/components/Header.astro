@@ -73,6 +73,20 @@ const isActive = (path: string) => {
               <div class="h-3.5 w-px bg-border/50"></div>
             </li>
 
+            <!-- Language toggle -->
+            <li class="flex items-center">
+              <div class="lang-toggle" id="lang-toggle-desktop">
+                <span class="lang-option" data-lang="en">EN</span>
+                <span class="lang-divider">/</span>
+                <span class="lang-option" data-lang="tr">TR</span>
+              </div>
+            </li>
+
+            <!-- Separator -->
+            <li class="flex items-center px-1" aria-hidden="true">
+              <div class="h-3.5 w-px bg-border/50"></div>
+            </li>
+
             <li class="flex items-center">
               <button
                 data-search-trigger
@@ -268,6 +282,40 @@ const isActive = (path: string) => {
   .hamburger-btn[aria-expanded="true"] .hamburger-line--1 { top: 6px; transform: rotate(45deg); }
   .hamburger-btn[aria-expanded="true"] .hamburger-line--2 { opacity: 0; transform: scaleX(0); }
   .hamburger-btn[aria-expanded="true"] .hamburger-line--3 { top: 6px; width: 100%; transform: rotate(-45deg); }
+
+  /* ─── Language toggle ─── */
+  .lang-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    border-radius: 0.375rem;
+  }
+
+  .lang-divider {
+    color: var(--border);
+    font-weight: 400;
+  }
+
+  .lang-option {
+    color: var(--muted-foreground);
+    cursor: pointer;
+    transition: color 0.15s ease;
+    padding: 0.1rem 0.15rem;
+    border-radius: 0.2rem;
+  }
+
+  .lang-option:hover {
+    color: var(--accent);
+  }
+
+  .lang-option.lang-active {
+    color: var(--accent);
+    font-weight: 700;
+  }
 </style>
 
 <script>
@@ -344,11 +392,43 @@ const isActive = (path: string) => {
     });
   }
 
+  function setupLangToggle() {
+    const toggles = document.querySelectorAll<HTMLElement>(".lang-toggle");
+    if (!toggles.length) return;
+
+    const path = window.location.pathname;
+    const isTR = path.startsWith("/tr");
+
+    toggles.forEach(toggle => {
+      const enBtn = toggle.querySelector<HTMLElement>('[data-lang="en"]');
+      const trBtn = toggle.querySelector<HTMLElement>('[data-lang="tr"]');
+      if (!enBtn || !trBtn) return;
+
+      // Mark active
+      enBtn.classList.toggle("lang-active", !isTR);
+      trBtn.classList.toggle("lang-active", isTR);
+
+      enBtn.addEventListener("click", () => {
+        // /tr/posts/foo → /posts/foo
+        const dest = path.replace(/^\/tr/, "") || "/";
+        window.location.href = dest;
+      });
+
+      trBtn.addEventListener("click", () => {
+        // /posts/foo → /tr/posts/foo
+        const dest = isTR ? path : "/tr" + (path === "/" ? "" : path);
+        window.location.href = dest;
+      });
+    });
+  }
+
   setupScrollPhysics();
   setupMobileNav();
+  setupLangToggle();
 
   document.addEventListener("astro:after-swap", () => {
     setupScrollPhysics();
     setupMobileNav();
+    setupLangToggle();
   });
 </script>
