@@ -399,6 +399,9 @@ const isActive = (path: string) => {
     const path = window.location.pathname;
     const isTR = path.startsWith("/tr");
 
+    // Toggle only works on post pages
+    const isPostPage = path.startsWith("/posts/") || path.startsWith("/tr/posts/");
+
     toggles.forEach(toggle => {
       const enBtn = toggle.querySelector<HTMLElement>('[data-lang="en"]');
       const trBtn = toggle.querySelector<HTMLElement>('[data-lang="tr"]');
@@ -408,15 +411,20 @@ const isActive = (path: string) => {
       enBtn.classList.toggle("lang-active", !isTR);
       trBtn.classList.toggle("lang-active", isTR);
 
+      // Gray out inactive button if not on a post page
+      toggle.style.opacity = isPostPage ? "1" : "0.35";
+      trBtn.style.cursor = isPostPage ? "pointer" : "default";
+      enBtn.style.cursor = isPostPage ? "pointer" : "default";
+
       enBtn.addEventListener("click", () => {
-        // /tr/posts/foo → /posts/foo
+        if (!isPostPage) return;
         const dest = path.replace(/^\/tr/, "") || "/";
         window.location.href = dest;
       });
 
       trBtn.addEventListener("click", () => {
-        // /posts/foo → /tr/posts/foo
-        const dest = isTR ? path : "/tr" + (path === "/" ? "" : path);
+        if (!isPostPage) return;
+        const dest = isTR ? path : "/tr" + path;
         window.location.href = dest;
       });
     });
