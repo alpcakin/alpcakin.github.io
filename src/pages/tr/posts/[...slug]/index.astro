@@ -1,0 +1,25 @@
+---
+import { type CollectionEntry, getCollection } from "astro:content";
+import PostDetails from "@/layouts/PostDetails.astro";
+import getSortedPosts from "@/utils/getSortedPosts";
+
+type Props = {
+  post: CollectionEntry<"blogTr">;
+};
+
+export async function getStaticPaths() {
+  const posts = await getCollection("blogTr", ({ data }) => !data.draft);
+  return posts.map(post => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+
+// Pass EN posts for prev/next navigation (or TR posts if preferred)
+const allPosts = await getCollection("blogTr");
+const sortedPosts = getSortedPosts(allPosts);
+---
+
+<PostDetails post={post} posts={sortedPosts} />

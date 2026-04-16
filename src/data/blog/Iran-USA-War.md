@@ -17,7 +17,7 @@ draft: false
 
 On the morning of February 28, 2026, the joint US-Israel operation "Operation Epic Fury" launched strikes on Iran. Around 900 strikes hit in the first 12 hours. By the end of the day, Iran's top religious and political leader Khamenei was dead; dozens of cabinet members, senior generals, and nuclear scientists were killed the same day. Even so, just a week later, a big chunk of the Western media was already running headlines saying, "the US is losing this war."
 
-A conflict where one side's leader and dozens of top officials get killed on day one. How does the other side end up being called the winner?
+A conflict where one side's leader and dozens of top officials get killed on day one. How does the other side end up being called the loser?
 
 This article looks at the economic side of the war — how Iran, the US, and the world economy were affected. And more importantly: who's losing, who's winning? Not from the media's frame. From the numbers.
 
@@ -77,7 +77,7 @@ According to the Dallas Fed model, a closure of Hormuz through the second quarte
 
 ![Dallas Fed Hormuz closure scenarios](/images/04_dallas_fed_scenarios.png)
 
-What the chart shows is that the longer the strait stays closed, the more the impact compounds. And there's a fact being overlooked here: tankers loaded before the war take 4–6 weeks to reach port. Some of the cargo that left before the strait closed still hasn't arrived. Once that inventory runs out, the futures market price will have to converge with the physical price. **Meaning: even if a ceasefire is announced, prices won't drop right away.**
+What the chart shows is that the longer the strait stays closed, the more the impact compounds. And there's a fact being overlooked here: tankers loaded before the war take 4–6 weeks to reach port. Some of the cargo that left before the strait closed still hasn't arrived. Once that inventory runs out, the futures market price will have to converge with the physical price. Meaning: even if a ceasefire is announced, prices won't drop right away.
 
 ### Europe
 
