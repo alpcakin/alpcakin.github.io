@@ -156,6 +156,18 @@ const structuredData = pubDatetime
       )
     }
 
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-5PD9JS29M5" is:inline></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'G-5PD9JS29M5');
+      document.addEventListener('astro:page-load', () => {
+        gtag('event', 'page_view', { page_path: window.location.pathname });
+      });
+    </script>
+
     <ClientRouter />
 
     <!-- Minimal inline script to prevent FOUC - sets theme immediately -->
