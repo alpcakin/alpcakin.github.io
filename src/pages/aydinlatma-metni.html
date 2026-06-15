@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aydınlatma Metni — Veresiye</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #F4F4F2;
+      color: #1A1A1A;
+      padding: 32px 16px 64px;
+    }
+    .container { max-width: 720px; margin: 0 auto; }
+    .logo {
+      font-size: 22px;
+      font-weight: 700;
+      color: #243C2C;
+      margin-bottom: 32px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: #243C2C;
+      display: inline-block;
+    }
+    h1 { font-size: 28px; font-weight: 700; color: #1A1A1A; margin-bottom: 8px; }
+    .meta { font-size: 14px; color: #6B7280; margin-bottom: 32px; }
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 20px;
+      border: 1px solid #E4E4E2;
+    }
+    h2 { font-size: 16px; font-weight: 600; margin-bottom: 12px; color: #243C2C; }
+    p { font-size: 15px; line-height: 1.6; color: #374151; margin-bottom: 10px; }
+    p:last-child { margin-bottom: 0; }
+    ul { padding-left: 20px; margin-bottom: 10px; }
+    li { font-size: 15px; line-height: 1.7; color: #374151; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; margin-bottom: 10px; }
+    th { text-align: left; padding: 8px 10px; background: #F4F4F2; color: #243C2C; font-weight: 600; border-bottom: 1px solid #E4E4E2; }
+    td { padding: 8px 10px; border-bottom: 1px solid #F4F4F2; color: #374151; vertical-align: top; }
+    tr:last-child td { border-bottom: none; }
+    .note {
+      background: #F0F4F1;
+      border-left: 3px solid #243C2C;
+      border-radius: 4px;
+      padding: 12px 14px;
+      font-size: 14px;
+      color: #374151;
+      margin-top: 10px;
+      line-height: 1.5;
+    }
+    a { color: #243C2C; font-weight: 600; }
+    footer { font-size: 13px; color: #9CA3AF; margin-top: 40px; text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">
+      <span class="logo-dot"></span>
+      Veresiye
+    </div>
+
+    <h1>Kişisel Verilerin İşlenmesine İlişkin Aydınlatma Metni</h1>
+    <p class="meta">Versiyon 1.0 &nbsp;·&nbsp; Yürürlük tarihi: Haziran 2026 &nbsp;·&nbsp; Veri sorumlusu: Alp Çakın</p>
+
+    <div class="card">
+      <h2>1. Veri Sorumlusu</h2>
+      <p>
+        6698 sayılı Kişisel Verilerin Korunması Kanunu ("KVKK") kapsamında veri sorumlusu <strong>Alp Çakın</strong>'dır.
+        Kişisel verilerinize ilişkin taleplerinizi
+        <a href="mailto:support@alpcakin.com">support@alpcakin.com</a> adresine iletebilirsiniz.
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>2. İşlenen Kişisel Veriler, Amaçlar ve Hukuki Sebepler</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Veri kategorisi</th>
+            <th>Veriler</th>
+            <th>İşleme amacı</th>
+            <th>Hukuki sebep (KVKK m.5)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Kimlik</td>
+            <td>Ad, soyad</td>
+            <td>Profil oluşturma; arkadaşlar arası tanımlama</td>
+            <td>Sözleşmenin kurulması ve ifası (m.5/2-c)</td>
+          </tr>
+          <tr>
+            <td>İletişim</td>
+            <td>E-posta adresi</td>
+            <td>Hesap doğrulama, güvenlik bildirimleri</td>
+            <td>Sözleşmenin kurulması ve ifası (m.5/2-c)</td>
+          </tr>
+          <tr>
+            <td>Finansal</td>
+            <td>IBAN (opsiyonel)</td>
+            <td>Ödeme kolaylaştırma; alıcıya gösterim</td>
+            <td>Sözleşmenin ifası (m.5/2-c)</td>
+          </tr>
+          <tr>
+            <td>Finansal</td>
+            <td>Borç, harcama ve ödeme kayıtları</td>
+            <td>Çekirdek borç takip hizmeti</td>
+            <td>Sözleşmenin ifası (m.5/2-c)</td>
+          </tr>
+          <tr>
+            <td>Görsel</td>
+            <td>Fiş/fatura görseli (opsiyonel)</td>
+            <td>Harcama belgeleme</td>
+            <td>Sözleşmenin ifası (m.5/2-c)</td>
+          </tr>
+          <tr>
+            <td>Teknik</td>
+            <td>Cihaz push token</td>
+            <td>Uygulama bildirimleri</td>
+            <td>Sözleşmenin ifası (m.5/2-c)</td>
+          </tr>
+          <tr>
+            <td>Teknik</td>
+            <td>Güvenlik ve işlem logları</td>
+            <td>Hizmet güvenliği, hata tespiti, dolandırıcılık önleme</td>
+            <td>Meşru menfaat (m.5/2-f)</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="note">
+        IBAN ve finansal kayıtlar KVKK kapsamında özel nitelikli kişisel veri değildir; ancak hassas nitelikleri nedeniyle
+        m.12 kapsamında teknik ve idari tedbirlerle korunmaktadır.
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>3. Kişisel Verilerin Aktarıldığı Taraflar</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Alıcı</th>
+            <th>Aktarılan veri</th>
+            <th>Amaç</th>
+            <th>Güvence</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Supabase Inc. (veri işleyen)</td>
+            <td>Tüm veriler</td>
+            <td>Veri tabanı barındırma ve altyapı</td>
+            <td>Veri İşleme Sözleşmesi (DPA); veriler İrlanda'da (AB) işleniyor</td>
+          </tr>
+          <tr>
+            <td>Apple Inc. / Google LLC</td>
+            <td>Push token</td>
+            <td>Uygulama bildirimleri</td>
+            <td>Platform hizmet sözleşmeleri</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>Verileriniz yukarıda belirtilenler dışında üçüncü taraflara aktarılmaz.</p>
+      <p>
+        <strong>Yurt dışı aktarım:</strong> Verileriniz Supabase altyapısı aracılığıyla İrlanda'da
+        (Avrupa Birliği, eu-west-1 bölgesi) barındırılmaktadır. Bu aktarım KVKK m.9 kapsamında
+        uygun güvence (Veri İşleme Sözleşmesi) ile yapılmaktadır.
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>4. Veri Toplama Yöntemi</h2>
+      <p>
+        Verileriniz; uygulama kayıt formu, profil düzenleme ekranı, harcama/borç giriş ekranları ve
+        cihaz push bildirim sistemi aracılığıyla elektronik ortamda toplanmaktadır.
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>5. Saklama Süreleri</h2>
+      <table>
+        <thead>
+          <tr><th>Veri</th><th>Saklama süresi</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Hesap ve profil verisi</td><td>Hesap silinene kadar</td></tr>
+          <tr><td>Borç, harcama ve ödeme kayıtları</td><td>Hesap silinene kadar; silme sonrası anonimleştirme</td></tr>
+          <tr><td>Güvenlik logları</td><td>Olay tarihinden itibaren 12 ay</td></tr>
+          <tr><td>Push token</td><td>Hesap aktif olduğu süre boyunca</td></tr>
+        </tbody>
+      </table>
+      <p>
+        Hesabınızın silinmesi halinde kişisel verileriniz silinir veya anonimleştirilir.
+        Başka kullanıcılarla paylaşılan harcama kayıtlarında sizin bilgileriniz "Silinmiş Kullanıcı"
+        olarak anonimleştirilir; kaydın geri kalanı diğer taraf için korunabilir.
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>6. İlgili Kişi Hakları (KVKK m.11)</h2>
+      <p>KVKK'nın 11. maddesi kapsamında aşağıdaki haklara sahipsiniz:</p>
+      <ul>
+        <li>Kişisel verilerinizin işlenip işlenmediğini öğrenme</li>
+        <li>İşlenmişse buna ilişkin bilgi talep etme</li>
+        <li>İşlenme amacını ve amacına uygun kullanılıp kullanılmadığını öğrenme</li>
+        <li>Yurt içinde veya yurt dışında aktarıldığı üçüncü kişileri bilme</li>
+        <li>Eksik veya yanlış işlenmişse düzeltilmesini isteme</li>
+        <li>KVKK m.7 çerçevesinde silinmesini veya yok edilmesini isteme</li>
+        <li>Düzeltme/silme işlemlerinin aktarılan üçüncü kişilere bildirilmesini isteme</li>
+        <li>İşlenen verilerin münhasıran otomatik sistemler vasıtasıyla analiz edilmesi suretiyle aleyhinize bir sonucun ortaya çıkmasına itiraz etme</li>
+        <li>Kanuna aykırı işleme nedeniyle zarara uğramanız hâlinde zararın giderilmesini talep etme</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>7. Başvuru</h2>
+      <p>
+        Haklarınızı kullanmak için <a href="mailto:support@alpcakin.com">support@alpcakin.com</a>
+        adresine e-posta yoluyla başvurabilirsiniz. Talebiniz en geç <strong>30 gün</strong> içinde yanıtlanır.
+        Başvurunuzda hesabınıza kayıtlı e-posta adresini belirtmenizi rica ederiz.
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>8. Çocuklara Yönelik Değildir</h2>
+      <p>
+        Veresiye 18 yaş ve üzeri kullanıcılara yönelik bir hizmettir. Bilerek 18 yaş altı kullanıcıların
+        kişisel verisi işlenmez; bu durumdan haberdar olunması halinde ilgili veriler derhal silinir.
+      </p>
+    </div>
+
+    <footer>
+      Veresiye — Alp Çakın &nbsp;·&nbsp; Son güncelleme: Haziran 2026
+    </footer>
+  </div>
+</body>
+</html>
