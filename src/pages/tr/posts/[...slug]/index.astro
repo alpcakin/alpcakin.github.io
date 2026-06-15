@@ -17,9 +17,8 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 
-// Pass EN posts for prev/next navigation (or TR posts if preferred)
 const allPosts = await getCollection("blogTr");
-const sortedPosts = getSortedPosts(allPosts);
+const sortedPosts = getSortedPosts(allPosts as unknown as CollectionEntry<"blog">[]);
 ---
 
-<PostDetails post={post} posts={sortedPosts} />
+<PostDetails post={post as unknown as CollectionEntry<"blog">} posts={sortedPosts} />
