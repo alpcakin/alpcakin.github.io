@@ -7,24 +7,107 @@ import { SITE } from "@/config";
 ---
 
 <Layout title={`404 Not Found | ${SITE.title}`}>
-  <Header />
-
-  <main
-    id="main-content"
-    class="app-layout flex flex-1 items-center justify-center"
-  >
-    <div class="mb-14 flex flex-col items-center justify-center">
-      <h1 class="text-9xl font-bold text-accent">404</h1>
-      <span aria-hidden="true">¯\_(ツ)_/¯</span>
-      <p class="mt-4 text-2xl sm:text-3xl">Page not found</p>
-      <LinkButton
-        href="/"
-        class="my-6 text-lg underline decoration-dashed underline-offset-8"
-      >
-        Back to home
-      </LinkButton>
+  <div id="join-fallback" style="display:none">
+    <div class="container">
+      <div class="logo"><span class="logo-dot"></span>Veresiye</div>
+      <h1>Çok Yakında!</h1>
+      <p class="subtitle">
+        Biri seni Veresiye'ye davet etti. Uygulama çok yakında App Store ve Google Play'de yayında olacak —
+        yayınlandığında bu link seni doğrudan davete götürecek.
+      </p>
+      <div class="card">
+        <p>Şimdilik yapacak bir şey yok — davet eden kişi uygulama yayınlanınca sana haber verecek.</p>
+      </div>
+      <footer>Veresiye — Alp Çakın</footer>
     </div>
-  </main>
+  </div>
 
-  <Footer />
+  <div id="default-404">
+    <Header />
+
+    <main
+      id="main-content"
+      class="app-layout flex flex-1 items-center justify-center"
+    >
+      <div class="mb-14 flex flex-col items-center justify-center">
+        <h1 class="text-9xl font-bold text-accent">404</h1>
+        <span aria-hidden="true">¯\_(ツ)_/¯</span>
+        <p class="mt-4 text-2xl sm:text-3xl">Page not found</p>
+        <LinkButton
+          href="/"
+          class="my-6 text-lg underline decoration-dashed underline-offset-8"
+        >
+          Back to home
+        </LinkButton>
+      </div>
+    </main>
+
+    <Footer />
+  </div>
 </Layout>
+
+<script>
+  if (location.pathname.startsWith("/join")) {
+    document.getElementById("default-404")!.style.display = "none";
+    document.getElementById("join-fallback")!.style.display = "block";
+  }
+</script>
+
+<style>
+  #join-fallback {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #f4f4f2;
+    color: #1a1a1a;
+    min-height: 100vh;
+    padding: 32px 16px 64px;
+  }
+  #join-fallback .container {
+    max-width: 480px;
+    margin: 0 auto;
+  }
+  #join-fallback .logo {
+    font-size: 22px;
+    font-weight: 700;
+    color: #243c2c;
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  #join-fallback .logo-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #243c2c;
+    display: inline-block;
+  }
+  #join-fallback h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 12px;
+  }
+  #join-fallback .subtitle {
+    font-size: 16px;
+    color: #6b7280;
+    margin-bottom: 24px;
+    line-height: 1.5;
+  }
+  #join-fallback .card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid #e4e4e2;
+  }
+  #join-fallback .card p {
+    font-size: 15px;
+    line-height: 1.6;
+    color: #374151;
+  }
+  #join-fallback footer {
+    font-size: 13px;
+    color: #9ca3af;
+    margin-top: 40px;
+    text-align: center;
+  }
+</style>
