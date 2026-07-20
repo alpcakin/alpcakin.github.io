@@ -4,7 +4,6 @@ import { glob } from "astro/loaders";
 import { SITE } from "@/config";
 
 export const BLOG_PATH = "src/data/blog";
-export const BLOG_TR_PATH = "src/data/blog-tr";
 
 const postSchema = ({ image }: { image: any }) =>
   z.object({
@@ -27,9 +26,4 @@ const blog = defineCollection({
   schema: postSchema,
 });
 
-const blogTr = defineCollection({
-  loader: glob({ pattern: "**/[^_]*.{md,mdx}", base: `./${BLOG_TR_PATH}` }),
-  schema: postSchema,
-});
-
-export const collections = { blog, blogTr };
+export const collections = { blog };

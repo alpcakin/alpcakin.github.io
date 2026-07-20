@@ -1,0 +1,35 @@
+# CLAUDE.md
+
+Project-level instructions for Claude Code sessions on this repo. Read this before making changes.
+
+## What this site is
+
+alpcakin.com is being converted from a pure economics blog into **Alp Çakın's developer portfolio**, with the economics/macro blog kept as a secondary "Blog" section rather than the homepage. The goal: convince both recruiters (full-time hiring) and non-technical prospects (freelance/contract clients) that Alp builds real products. Full context and every locked-in decision is in:
+
+- [`docs/portfolio-redesign-plan.md`](./docs/portfolio-redesign-plan.md) — the implementation plan.
+- [`docs/portfolio-redesign-qa.md`](./docs/portfolio-redesign-qa.md) — the full requirements interview + researched facts (CV, bayerpos.com) it's based on.
+
+Read both before touching site structure, positioning copy, or the project list — they contain decisions that aren't obvious from the code alone.
+
+## Hard constraints
+
+- **Do not touch the Veresiye legal/app-link pages**: `src/pages/aydinlatma-metni.html`, `src/pages/kullanim-kosullari.html`, `src/pages/veri-silme.html`, `public/.well-known/apple-app-site-association`, `public/.well-known/assetlinks.json`. These serve a separate mobile app (Veresiye) and are required for its app-store compliance, independent of this site's language or design. They intentionally aren't linked from the main nav — that's not an oversight.
+- **Light-only, "warm paper" editorial theme.** No theme toggle, no dark variant. As of 2026-07-20 the site was deliberately repainted from the earlier premium-dark direction to a light editorial look (Claude Design handoff, explicitly approved by Alp — supersedes the older "dark-only" rule that used to live here). Palette lives in `src/styles/global.css` `:root`: `--background:#F4F1E9` (paper), `--foreground:#16130E` (ink), `--accent:#2233E6` (electric blue), `--muted:#EBE6D9` (panel), `--border:#DDD6C7` (line), `--muted-foreground:#57524A` (ink-soft). Don't reintroduce the old near-black/gold palette or a light/dark switch.
+- **No Turkish site content.** English only, no auto-translate/geolocation-based language switching. (This doesn't apply to the Veresiye legal pages above, which are Turkish by requirement.)
+
+## Design system
+
+The site runs a light editorial visual language: `Instrument Serif` for display headings (`var(--font-serif)`), `Space Grotesk` for body copy (`var(--font-app)` / `--font-sans`), `Space Mono` for uppercase eyebrow labels/meta/mono UI text (`var(--font-mono)`), all loaded through Astro's built-in font pipeline (`astro.config.ts` `fonts:` array using `fontProviders.google()`, not raw `<link>` tags) — reuse those css variables rather than hardcoding font names. A cursor-follow glow (`Layout.astro`, `mix-blend-mode: multiply` so it works on the light background) is the one global decorative motion effect; the homepage additionally has a horizontal marquee ticker and a hover/tap-to-expand numbered accordion for the Work section (`src/pages/index.astro`), both hand-rolled CSS/vanilla-JS, matching the existing no-animation-library convention (no GSAP/Framer Motion). `prefers-reduced-motion` is handled throughout (reveal-on-scroll, marquee, hover glow) — keep that when adding new motion. **Reuse these patterns and the `color-mix()`-based CSS custom property system for new sections instead of inventing a new visual idiom.**
+
+## Notes for future sessions
+
+- Kod, yorumlar, commit mesajları her zaman İngilizce; UI metni (kullanıcıya gösterilen) hariç.
+- Onay almadan `git push` yapma.
+- Tasarım/mimari kararlarda maliyet/süre bir gerekçe değil — en doğru/sürdürülebilir çözümü seç.
+
+## Issues encountered → how solved
+
+- **Removing `@custom-variant dark` broke several `dark:` Tailwind usages.** Once the site is dark-only, keeping the light/dark `@custom-variant` around just to satisfy a handful of `dark:` utility classes is vestigial. Instead of keeping it, every `dark:` usage was hunted down and merged into its unprefixed (dark) value: `BackToTopButton.astro` shadow classes, `MobileMenu.astro` panel border, `PostDetails.astro` shiki code-block background, and `typography.css`'s `html[data-theme="dark"] .astro-code` rule (now just `.astro-code`, unconditional). `data-theme="dark"` is still hardcoded statically on `<html>` in `Layout.astro` (no JS) purely because that attribute selector is what those merged rules key off of — it's not theme-switching machinery.
+- **Site search (Pagefind) was removed entirely (2026-07-20).** Alp decided the nav search button/⌘K modal, the dedicated `/search` page, and the inline search box on the blog archive weren't worth keeping. Removed: `src/components/SearchModal.astro`, `src/pages/search.astro`, the search triggers in `Header.astro`/`MobileMenu.astro`, the inline Pagefind box + init script in `src/pages/posts/[...page].astro`, `data-pagefind-body`/`data-pagefind-ignore` attributes in `PostDetails.astro`, the `.premium-search` CSS block, the `pagefind --site dist && cp -r dist/pagefind public/` build step, and the `pagefind`/`@pagefind/default-ui` dependencies. If search is ever wanted again, it'll need to be re-added from scratch (not just un-commented) — treat any future request for site search as new work, not a revert.
+- **The site pivoted from dark to light mid-redesign (2026-07-20).** The portfolio rebuild in `docs/portfolio-redesign-plan.md` was implemented first in the original dark/gold direction; Alp then supplied a Claude Design handoff bundle (`Alp Cakin.dc.html`, a "warm paper" editorial prototype: Instrument Serif + Space Grotesk + Space Mono, electric-blue accent, marquee ticker, numbered hover-to-expand Work accordion, live Pécs clock in the nav) and asked for it to be applied site-wide, explicitly overriding the older dark-only constraint. Local font files for the old Wotfard/Cartograph CF fonts were removed (`src/assets/fonts/`) since nothing references them anymore; `ProjectCard.astro` was deleted in favor of the inline accordion markup in `index.astro`. `docs/portfolio-redesign-plan.md`'s content/structure decisions (which 4 projects, About copy, tech list) still hold — only its "dark, minimal, premium" visual-direction bullets are stale now.
+- **The public-facing name for the Veresiye app is "Odesh".** The mobile app's legal/compliance files (`aydinlatma-metni.html` etc.) and package IDs stay under the "Veresiye" name for app-store continuity (hard constraint, do not touch), but Alp wants the portfolio's Work section — and any future site copy — to refer to the same app as **Odesh**, described functionally as a shared-debt/expense tracking app (do not name-drop "Splitwise" in on-site copy, just describe the function).

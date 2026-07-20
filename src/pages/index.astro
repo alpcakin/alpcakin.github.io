@@ -1,173 +1,848 @@
 ---
-import { getCollection } from "astro:content";
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
-import Socials from "@/components/Socials.astro";
-import LinkButton from "@/components/LinkButton.astro";
-import Card from "@/components/Card.astro";
-import getSortedPosts from "@/utils/getSortedPosts";
-import IconArrowRight from "@/assets/icons/IconArrowRight.svg";
 import { SITE } from "@/config";
 import { SOCIALS } from "@/constants";
 
-const posts = await getCollection("blog");
-const sortedPosts = getSortedPosts(posts);
-const featuredPosts = sortedPosts.filter(({ data }) => data.featured);
-const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
+const projects = [
+  {
+    title: "alpcakin.com",
+    meta: "This site",
+    description:
+      "My portfolio and blog, built from scratch — a light editorial UI with a full essay archive and client-side search.",
+    tags: ["Astro", "TypeScript", "Tailwind CSS", "Pagefind"],
+    link: { label: "Source ↗", href: "https://github.com/alpcakin/alpcakin.github.io" },
+  },
+  {
+    title: "Odesh",
+    meta: "Mobile App",
+    description:
+      "A React Native app for tracking and settling shared debts between friends and groups, with Supabase RPC functions running the backend logic.",
+    tags: ["React Native", "Supabase", "TypeScript"],
+    link: null,
+  },
+  {
+    title: "Bayerpos",
+    meta: "Cofounder",
+    description:
+      "An offline-first POS system for small retail shops in Turkey. My part: the backend, database, and the invoice-OCR pipeline built on Gemini.",
+    tags: ["TypeScript", "PostgreSQL", "Gemini", "pgvector"],
+    link: { label: "bayerpos.com ↗", href: "https://bayerpos.com" },
+  },
+  {
+    title: "Financial Insights & Alert System",
+    meta: "Thesis · Ongoing",
+    description:
+      "A full-stack fintech app that processes real-time market data and sends automated alerts — my ongoing thesis project.",
+    tags: ["FastAPI", "Flutter", "Supabase"],
+    link: null,
+  },
+];
+
+const capabilities = [
+  {
+    group: "Product & Backend",
+    items: [
+      "TypeScript",
+      "C#",
+      "Next.js",
+      "React Native",
+      "Flutter",
+      "FastAPI",
+      "Supabase",
+      "PostgreSQL",
+      "Astro & Tailwind",
+      "Git / GitHub",
+    ],
+  },
+  {
+    group: "Data & AI",
+    items: [
+      "Claude",
+      "OpenAI API",
+      "Gemini — invoice OCR",
+      "pgvector & embeddings",
+      "Python — Pandas, NumPy",
+      "SQL — PL/SQL, window functions",
+    ],
+  },
+];
 ---
 
 <Layout>
   <Header />
 
-  <main id="main-content" class="relative app-layout">
-
+  <main id="main-content" class="relative">
     <!-- ═══════════ HERO ═══════════ -->
-    <section id="hero" class="pt-8 pb-7 sm:pt-10 sm:pb-8 border-b border-border/30 flex items-center justify-between gap-6 flex-wrap">
-      <div class="flex items-center gap-4">
-        <img
-          src="/images/alp-cakin.jpeg"
-          alt="Alp Çakın"
-          class="hero-photo"
-        />
-        <div>
-          <p class="hero-name">{SITE.author}</p>
-          <p class="hero-label">Economics · Ideas · Software</p>
-        </div>
+    <section id="hero" class="wide-section hero-section" data-reveal>
+      <p class="hero-eyebrow">Full-Stack Developer &nbsp;—&nbsp; Pécs, Hungary</p>
+      <h1 class="hero-title">
+        Alp <em>Çakın</em><span class="hero-dot">.</span>
+      </h1>
+      <div class="hero-bottom-row">
+        <p class="hero-subtitle">
+          I build web &amp; mobile products end to end — and write about the
+          markets that move them.
+        </p>
+        <p class="hero-scroll">
+          <span class="hero-scroll-line" aria-hidden="true"></span>
+          Scroll
+        </p>
       </div>
-
-      {
-        SOCIALS.length > 0 && (
-          <div class="flex items-center gap-1">
-            <Socials />
-          </div>
-        )
-      }
     </section>
 
-    <!-- ═══════════ FEATURED ═══════════ -->
-    {
-      featuredPosts.length > 0 && (
-        <section id="featured" class="pt-10 pb-2">
-          <h2 class="section-label">Featured</h2>
-          <ul class="[&>li]:my-0">
-            {featuredPosts.map(data => (
-              <Card variant="h3" featured={true} {...data} />
-            ))}
-          </ul>
-        </section>
-      )
-    }
+    <!-- ═══════════ MARQUEE ═══════════ -->
+    <section class="marquee-section" data-reveal>
+      <div class="marquee-track">
+        <span class="marquee-copy">
+          Full-Stack&nbsp;&nbsp;<span class="marquee-sep">/</span>&nbsp;&nbsp;React
+          Native&nbsp;&nbsp;<span class="marquee-sep">/</span>&nbsp;&nbsp;FastAPI&nbsp;&nbsp;<span
+            class="marquee-sep">/</span>&nbsp;&nbsp;Supabase&nbsp;&nbsp;<span
+            class="marquee-sep">/</span>&nbsp;&nbsp;Applied&nbsp;AI&nbsp;&nbsp;<span
+            class="marquee-sep">/</span>&nbsp;&nbsp;Forex&nbsp;Trader&nbsp;&nbsp;<span
+            class="marquee-sep">/</span>&nbsp;&nbsp;Macro&nbsp;Writer&nbsp;&nbsp;<span
+            class="marquee-sep">/</span>&nbsp;&nbsp;Ships&nbsp;Fast&nbsp;&nbsp;<span
+            class="marquee-sep">/</span>&nbsp;&nbsp;
+        </span>
+        <span class="marquee-copy" aria-hidden="true">
+          Full-Stack&nbsp;&nbsp;<span class="marquee-sep">/</span>&nbsp;&nbsp;React
+          Native&nbsp;&nbsp;<span class="marquee-sep">/</span>&nbsp;&nbsp;FastAPI&nbsp;&nbsp;<span
+            class="marquee-sep">/</span>&nbsp;&nbsp;Supabase&nbsp;&nbsp;<span
+            class="marquee-sep">/</span>&nbsp;&nbsp;Applied&nbsp;AI&nbsp;&nbsp;<span
+            class="marquee-sep">/</span>&nbsp;&nbsp;Forex&nbsp;Trader&nbsp;&nbsp;<span
+            class="marquee-sep">/</span>&nbsp;&nbsp;Macro&nbsp;Writer&nbsp;&nbsp;<span
+            class="marquee-sep">/</span>&nbsp;&nbsp;Ships&nbsp;Fast&nbsp;&nbsp;<span
+            class="marquee-sep">/</span>&nbsp;&nbsp;
+        </span>
+      </div>
+    </section>
 
-    <!-- ═══════════ RECENT POSTS ═══════════ -->
-    {
-      recentPosts.length > 0 && (
-        <section id="recent-posts" class:list={["pb-6", featuredPosts.length === 0 && "pt-10"]}>
-          {featuredPosts.length > 0 && <h2 class="section-label mt-8">Recent</h2>}
-          <ul>
-            {recentPosts.map(
-              (data, index) =>
-                index < SITE.postPerIndex && <Card variant="h3" {...data} />
-            )}
-          </ul>
+    <!-- ═══════════ ABOUT ═══════════ -->
+    <section id="about" class="wide-section section">
+      <p class="section-label" data-reveal>About</p>
+      <div class="about-layout">
+        <img
+          src="/images/alp-cakin.jpeg"
+          alt={SITE.author}
+          class="about-photo"
+          data-reveal
+        />
+        <div class="about-copy" data-reveal>
+          <h2 class="about-heading">
+            Student, builder, and <em>funded trader</em> — in that order of
+            stubbornness.
+          </h2>
+          <div class="about-prose">
+            <p>
+              I'm a Computer Science Engineering student at the University of
+              Pécs, Hungary, graduating January 2027. I build full-stack
+              products — React Native and Flutter on the frontend, FastAPI
+              and Supabase on the backend — with a growing focus on applied
+              AI: invoice OCR, embeddings, and pgvector experience along the
+              way.
+            </p>
+            <p>
+              Right now I'm a cofounder at <strong>Bayerpos</strong>,
+              building the OCR and backend behind an offline-first POS
+              platform for small retail shops in Turkey. I also maintain
+              <strong>Odesh</strong>, a shared-debt tracker, and I'm building
+              a fintech alert system as my thesis.
+            </p>
+            <p>
+              Outside of software, I'm a funded forex trader with{" "}
+              <a href="https://the5ers.com" target="_blank" rel="noopener noreferrer">The5ers</a>,
+              and I write about macroeconomics and market dynamics — worked
+              through in public, not academic summaries.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
 
-          {recentPosts.length > SITE.postPerIndex && (
-            <div class="mt-8 mb-4">
-              <LinkButton
-                href="/posts/"
-                class="all-posts-link group inline-flex items-center gap-2"
+    <!-- ═══════════ WORK ═══════════ -->
+    <section id="work" class="wide-section section">
+      <div class="work-heading-row" data-reveal>
+        <p class="section-label">Selected Work</p>
+        <p class="work-hint">Hover or tap to expand</p>
+      </div>
+      <ul class="work-list">
+        {
+          projects.map((project, i) => (
+            <li class="work-item" data-work-item data-reveal>
+              <button
+                type="button"
+                class="work-row"
+                data-work-toggle
+                aria-expanded="false"
               >
-                All posts
-                <IconArrowRight
-                  class="size-4 transition-transform duration-200 group-hover:translate-x-1"
-                />
-              </LinkButton>
+                <span class="work-left">
+                  <span class="work-num">{String(i + 1).padStart(2, "0")}</span>
+                  <span class="work-title">{project.title}</span>
+                </span>
+                <span class="work-right">
+                  <span class="work-meta">{project.meta}</span>
+                  <span class="work-plus" aria-hidden="true">+</span>
+                </span>
+              </button>
+              <div class="work-panel">
+                <div class="work-panel-inner">
+                  <div class="work-panel-content">
+                    <p class="work-desc">{project.description}</p>
+                    <p class="work-tags">{project.tags.join("   ·   ")}</p>
+                    {project.link && (
+                      <a
+                        href={project.link.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="work-link"
+                      >
+                        {project.link.label}
+                      </a>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <!-- ═══════════ CAPABILITIES ═══════════ -->
+    <section id="capabilities" class="wide-section section">
+      <p class="section-label" data-reveal>Capabilities</p>
+      <div class="cap-groups">
+        {
+          capabilities.map(({ group, items }) => (
+            <div data-reveal>
+              <p class="cap-group-label">{group}</p>
+              <div class="cap-list">
+                {items.map(item => <div class="cap-item">{item}</div>)}
+              </div>
             </div>
-          )}
-        </section>
-      )
-    }
+          ))
+        }
+      </div>
+    </section>
 
-    <!-- Empty state -->
-    {
-      posts.length === 0 && (
-        <section class="pt-14 pb-10">
-          <p class="text-foreground/40 text-sm">No posts yet. Check back soon.</p>
-        </section>
-      )
-    }
+    <!-- ═══════════ WRITING ═══════════ -->
+    <section id="writing" class="writing-section" data-reveal>
+      <div class="wide-section writing-inner">
+        <p class="section-label">Writing</p>
+        <h2 class="writing-heading">I also write about <em>markets</em>.</h2>
+        <p class="writing-sub">
+          Macroeconomics, financial crises, and market dynamics — the same
+          reasoning I trade with, worked through in the open.
+        </p>
+        <div class="writing-row">
+          <a href="/posts/" class="writing-cta">Read the essays →</a>
+          <span class="writing-topics">
+            Japan's debt crisis · Turkey stagflation · Iran–USA · Falling fertility
+          </span>
+        </div>
+      </div>
+    </section>
 
+    <!-- ═══════════ CONTACT ═══════════ -->
+    <section id="contact" class="wide-section section contact-section" data-reveal>
+      <p class="section-label">Contact</p>
+      <a href="mailto:alpcakin16@gmail.com" class="contact-email">
+        alpcakin16@gmail.com
+      </a>
+      <div class="contact-links">
+        {
+          SOCIALS.map(social => (
+            <a href={social.href} target="_blank" rel="noopener noreferrer" class="contact-link">
+              {social.name}
+            </a>
+          ))
+        }
+      </div>
+    </section>
   </main>
 
   <Footer />
 </Layout>
 
 <style>
-  .hero-label {
-    font-family: var(--font-cartograph, monospace);
-    font-size: 0.6875rem;
-    font-weight: 500;
-    letter-spacing: 0.12em;
+  /* ─── Shared wide layout (this page uses a wider canvas than the blog) ─── */
+  .wide-section {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding-inline: clamp(1.25rem, 5vw, 4.5rem);
+  }
+
+  /* ─── Hero ─── */
+  .hero-section {
+    padding-block: clamp(3.5rem, 9vw, 8rem) clamp(2.5rem, 6vw, 5rem);
+  }
+
+  .hero-eyebrow {
+    font-family: var(--font-mono);
+    font-size: clamp(0.72rem, 1.1vw, 0.85rem);
+    letter-spacing: 0.24em;
     text-transform: uppercase;
-    color: var(--foreground);
-    opacity: 0.35;
-    margin-top: 0.3rem;
+    color: var(--accent);
+    margin: 0 0 clamp(1.5rem, 4vw, 2.75rem);
   }
 
-  .hero-photo {
-    width: 52px;
-    height: 52px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid color-mix(in srgb, var(--color-accent) 40%, transparent);
-    flex-shrink: 0;
-  }
-
-  @media (min-width: 640px) {
-    .hero-photo {
-      width: 60px;
-      height: 60px;
-    }
-  }
-
-  .hero-name {
-    font-family: 'Playfair Display', Georgia, 'Times New Roman', serif;
-    font-size: 1.25rem;
-    font-weight: 700;
-    letter-spacing: -0.01em;
-    line-height: 1.1;
+  .hero-title {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: clamp(3.4rem, 14vw, 11rem);
+    line-height: 0.88;
+    letter-spacing: -0.025em;
     color: var(--foreground);
   }
 
-  @media (min-width: 640px) {
-    .hero-name {
-      font-size: 1.5rem;
-    }
+  .hero-title em {
+    font-style: italic;
+  }
+
+  .hero-dot {
+    color: var(--accent);
+  }
+
+  .hero-bottom-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 2rem;
+    margin-top: clamp(2.25rem, 5vw, 3.75rem);
+  }
+
+  .hero-subtitle {
+    margin: 0;
+    max-width: 32ch;
+    font-size: clamp(1.15rem, 2vw, 1.65rem);
+    line-height: 1.45;
+    color: var(--muted-foreground);
+  }
+
+  .hero-scroll {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted-foreground);
+  }
+
+  .hero-scroll-line {
+    display: inline-block;
+    width: 2.5rem;
+    height: 1px;
+    background: var(--muted-foreground);
+  }
+
+  /* ─── Marquee ─── */
+  .marquee-section {
+    position: relative;
+    border-block: 1px solid var(--border);
+    background: var(--muted);
+    overflow: hidden;
+    padding-block: clamp(0.85rem, 1.9vw, 1.5rem);
+  }
+
+  .marquee-track {
+    display: inline-flex;
+    white-space: nowrap;
+    will-change: transform;
+    animation: marq 30s linear infinite;
+  }
+
+  .marquee-track:hover {
+    animation-play-state: paused;
+  }
+
+  .marquee-copy {
+    font-family: var(--font-serif);
+    font-size: clamp(1.55rem, 4.6vw, 3.2rem);
+    color: var(--foreground);
+  }
+
+  .marquee-sep {
+    color: var(--accent);
+  }
+
+  @keyframes marq {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* ─── Sections (shared) ─── */
+  .section {
+    padding-block: clamp(4rem, 9vw, 8rem);
   }
 
   .section-label {
-    font-family: var(--font-cartograph, monospace);
-    font-size: 0.6875rem;
-    font-weight: 600;
-    letter-spacing: 0.14em;
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    letter-spacing: 0.22em;
     text-transform: uppercase;
     color: var(--accent);
-    opacity: 0.65;
-    margin-bottom: 0.25rem;
+    margin: 0 0 clamp(2rem, 4vw, 3rem);
   }
 
-  .all-posts-link {
-    font-size: 0.875rem;
-    font-weight: 500;
+  /* ─── About ─── */
+  .about-layout {
+    display: flex;
+    flex-wrap: wrap;
+    gap: clamp(2.25rem, 6vw, 4.5rem);
+    align-items: flex-start;
+  }
+
+  .about-photo {
+    width: clamp(150px, 22vw, 240px);
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    border-radius: 5px;
+    border: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .about-copy {
+    flex: 1;
+    min-width: min(100%, 320px);
+    max-width: 56ch;
+  }
+
+  .about-heading {
+    margin: 0 0 clamp(1.75rem, 3.5vw, 2.5rem);
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: clamp(2rem, 5.5vw, 4rem);
+    line-height: 1.04;
+    letter-spacing: -0.01em;
+    color: var(--foreground);
+  }
+
+  .about-heading em {
+    font-style: italic;
     color: var(--accent);
-    opacity: 0.8;
-    transition: opacity 0.15s ease;
-    text-decoration: none;
-    border-bottom: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
-    padding-bottom: 1px;
   }
 
-  .all-posts-link:hover {
+  .about-prose {
+    display: flex;
+    flex-direction: column;
+    gap: 1.35rem;
+    font-size: clamp(1.02rem, 1.5vw, 1.22rem);
+    line-height: 1.65;
+    color: var(--muted-foreground);
+  }
+
+  .about-prose p {
+    margin: 0;
+  }
+
+  .about-prose strong {
+    color: var(--foreground);
+    font-weight: 600;
+  }
+
+  .about-prose a {
+    color: var(--accent);
+  }
+
+  /* ─── Work ─── */
+  .work-heading-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .work-heading-row .section-label {
+    margin: 0;
+  }
+
+  .work-hint {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted-foreground);
+    margin: 0;
+  }
+
+  .work-list {
+    list-style: none;
+    margin: clamp(1.75rem, 3.5vw, 2.75rem) 0 0;
+    padding: 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .work-item {
+    border-top: 1px solid var(--border);
+  }
+
+  .work-row {
+    all: unset;
+    box-sizing: border-box;
+    display: flex;
+    width: 100%;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1.25rem;
+    padding-block: clamp(1.15rem, 2.5vw, 1.9rem);
+    cursor: pointer;
+  }
+
+  .work-left {
+    display: flex;
+    align-items: baseline;
+    gap: clamp(0.9rem, 2vw, 2rem);
+    min-width: 0;
+  }
+
+  .work-num {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--accent);
+    flex-shrink: 0;
+  }
+
+  .work-title {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: clamp(1.7rem, 4.6vw, 3rem);
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    color: var(--foreground);
+    transition: color 0.3s ease;
+  }
+
+  .work-item.is-open .work-title {
+    color: var(--accent);
+  }
+
+  .work-right {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.8rem, 1.8vw, 1.5rem);
+    flex-shrink: 0;
+  }
+
+  .work-meta {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted-foreground);
+    white-space: nowrap;
+  }
+
+  .work-plus {
+    font-family: var(--font-app);
+    font-size: 1.5rem;
+    line-height: 1;
+    color: var(--foreground);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s;
+  }
+
+  .work-item.is-open .work-plus {
+    transform: rotate(45deg);
+    color: var(--accent);
+  }
+
+  .work-panel {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .work-item.is-open .work-panel {
+    grid-template-rows: 1fr;
+  }
+
+  .work-panel-inner {
+    overflow: hidden;
+  }
+
+  .work-panel-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+    padding-bottom: clamp(1.5rem, 3.2vw, 2.5rem);
+    max-width: 62ch;
+  }
+
+  .work-desc {
+    margin: 0;
+    font-size: clamp(1rem, 1.5vw, 1.22rem);
+    line-height: 1.6;
+    color: var(--muted-foreground);
+  }
+
+  .work-tags {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    color: var(--foreground);
+  }
+
+  .work-link {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.04em;
+    color: var(--accent);
+  }
+
+  /* ─── Capabilities ─── */
+  .cap-groups {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+    gap: clamp(2.5rem, 6vw, 5rem);
+  }
+
+  .cap-group-label {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted-foreground);
+    margin: 0 0 1.25rem;
+  }
+
+  .cap-list {
+    border-top: 1px solid var(--border);
+  }
+
+  .cap-item {
+    border-bottom: 1px solid var(--border);
+    padding-block: 0.55rem;
+    font-family: var(--font-serif);
+    font-size: clamp(1.15rem, 1.8vw, 1.5rem);
+    color: var(--foreground);
+    transition: color 0.25s, padding-left 0.25s;
+  }
+
+  .cap-item:hover {
+    color: var(--accent);
+    padding-left: 0.6rem;
+  }
+
+  /* ─── Writing ─── */
+  .writing-section {
+    border-block: 1px solid var(--border);
+    background: var(--muted);
+  }
+
+  .writing-inner {
+    padding-block: clamp(4.5rem, 10vw, 8.5rem);
+  }
+
+  .writing-heading {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: clamp(2.4rem, 7vw, 5.5rem);
+    line-height: 1.02;
+    letter-spacing: -0.015em;
+    color: var(--foreground);
+    max-width: 16ch;
+  }
+
+  .writing-heading em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .writing-sub {
+    margin: clamp(1.5rem, 3vw, 2.25rem) 0 0;
+    max-width: 46ch;
+    font-size: clamp(1.05rem, 1.5vw, 1.3rem);
+    line-height: 1.6;
+    color: var(--muted-foreground);
+  }
+
+  .writing-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.5rem 2rem;
+    margin-top: clamp(2rem, 4vw, 3rem);
+  }
+
+  .writing-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--foreground);
+    border: 1px solid var(--foreground);
+    border-radius: 999px;
+    padding: 0.7rem 1.4rem;
+    transition: background 0.25s, color 0.25s;
+  }
+
+  .writing-cta:hover {
+    background: var(--foreground);
+    color: var(--background);
+  }
+
+  .writing-topics {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    color: var(--muted-foreground);
+  }
+
+  /* ─── Contact ─── */
+  .contact-email {
+    display: block;
+    font-family: var(--font-serif);
+    font-size: clamp(2.1rem, 8vw, 5rem);
+    line-height: 1.04;
+    letter-spacing: -0.02em;
+    color: var(--foreground);
+    word-break: break-word;
+    transition: color 0.25s;
+  }
+
+  .contact-email:hover {
+    color: var(--accent);
+  }
+
+  .contact-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem 2.25rem;
+    margin-top: clamp(2rem, 4vw, 3rem);
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .contact-link {
+    color: var(--foreground);
+    transition: color 0.15s ease;
+  }
+
+  .contact-link:hover {
+    color: var(--accent);
+  }
+
+  /* ─── Scroll reveal ─── */
+  [data-reveal] {
+    opacity: 0;
+    transform: translateY(32px);
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  [data-reveal].is-visible {
     opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-reveal] {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+    .marquee-track {
+      animation: none !important;
+    }
   }
 </style>
+
+<script>
+  let revealCleanup: AbortController | null = null;
+  let workCleanup: AbortController | null = null;
+
+  function setupScrollReveal() {
+    if (revealCleanup) revealCleanup.abort();
+    revealCleanup = new AbortController();
+    const { signal } = revealCleanup;
+
+    const targets = document.querySelectorAll<HTMLElement>("[data-reveal]");
+    if (!targets.length) return;
+
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+    if (prefersReducedMotion) {
+      targets.forEach(el => el.classList.add("is-visible"));
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.1, rootMargin: "0px 0px -60px 0px" }
+    );
+
+    targets.forEach(el => observer.observe(el));
+    signal.addEventListener("abort", () => observer.disconnect());
+  }
+
+  function setupWorkAccordion() {
+    if (workCleanup) workCleanup.abort();
+    workCleanup = new AbortController();
+    const { signal } = workCleanup;
+
+    const items = Array.from(
+      document.querySelectorAll<HTMLLIElement>("[data-work-item]")
+    );
+    if (!items.length) return;
+
+    const hoverCapable = window.matchMedia("(pointer: fine)").matches;
+
+    const setOpen = (target: HTMLLIElement | null) => {
+      items.forEach(item => {
+        const isOpen = item === target;
+        item.classList.toggle("is-open", isOpen);
+        item
+          .querySelector("[data-work-toggle]")
+          ?.setAttribute("aria-expanded", String(isOpen));
+      });
+    };
+
+    items.forEach(item => {
+      const toggle = item.querySelector<HTMLButtonElement>("[data-work-toggle]");
+      if (!toggle) return;
+
+      toggle.addEventListener(
+        "click",
+        () => {
+          const alreadyOpen = item.classList.contains("is-open");
+          setOpen(alreadyOpen ? null : item);
+        },
+        { signal }
+      );
+
+      if (hoverCapable) {
+        item.addEventListener("mouseenter", () => setOpen(item), { signal });
+      }
+    });
+  }
+
+  setupScrollReveal();
+  setupWorkAccordion();
+
+  document.addEventListener("astro:page-load", () => {
+    setupScrollReveal();
+    setupWorkAccordion();
+  });
+</script>

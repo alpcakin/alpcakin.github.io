@@ -1,9 +1,4 @@
 ---
-import IconMoon from "@/assets/icons/IconMoon.svg";
-import IconSearch from "@/assets/icons/IconSearch.svg";
-import IconSunHigh from "@/assets/icons/IconSunHigh.svg";
-import { SITE } from "@/config";
-
 interface Props {
   currentPath: string;
 }
@@ -15,6 +10,13 @@ const isActive = (path: string) => {
   const pathArray = path.split("/").filter((p) => p.trim());
   return currentPath === path || currentPathArray[0] === pathArray[0];
 };
+
+const navLinks = [
+  { href: "/#work", label: "Work" },
+  { href: "/#about", label: "About" },
+  { href: "/posts/", label: "Writing", active: isActive("/posts") },
+  { href: "/#contact", label: "Contact" },
+];
 ---
 
 <div id="mobile-menu" class="mobile-menu sm:hidden" aria-hidden="true">
@@ -24,91 +26,23 @@ const isActive = (path: string) => {
   <!-- Floating Glass Panel -->
   <div class="app-layout">
     <div
-      class="mobile-menu-panel relative mt-2 w-full mx-auto rounded-2xl border border-white/10 dark:border-white/5 overflow-hidden shadow-2xl"
+      class="mobile-menu-panel relative mt-2 w-full mx-auto rounded-2xl border border-white/5 overflow-hidden shadow-2xl"
     >
       <div class="mobile-menu-inner">
         <nav class="mobile-nav-links">
-          <a
-            href="/about"
-            class:list={["mobile-nav-link", { active: isActive("/about") }]}
-            style="--i:0"
-          >
-            <span class="mobile-nav-indicator"></span>
-            <span>About</span>
-          </a>
           {
-            SITE.showArchives && (
+            navLinks.map((link, i) => (
               <a
-                href="/archives"
-                class:list={[
-                  "mobile-nav-link",
-                  { active: isActive("/archives") },
-                ]}
-                style="--i:3"
+                href={link.href}
+                class:list={["mobile-nav-link", { active: link.active }]}
+                style={`--i:${i}`}
               >
                 <span class="mobile-nav-indicator" />
-                <span>Archives</span>
+                <span>{link.label}</span>
               </a>
-            )
-          }
-          {
-            SITE.showGalleries && (
-              <a
-                href="/galleries"
-                class:list={[
-                  "mobile-nav-link",
-                  { active: isActive("/galleries") },
-                ]}
-                style="--i:4"
-              >
-                <span class="mobile-nav-indicator" />
-                <span>Galleries</span>
-              </a>
-            )
+            ))
           }
         </nav>
-
-        <!-- Divider -->
-        <div class="mobile-menu-divider"></div>
-
-        <!-- Language toggle -->
-        <div class="lang-toggle mobile-lang-toggle" id="lang-toggle-mobile">
-          <span class="lang-option" data-lang="en">EN</span>
-          <span class="lang-divider">/</span>
-          <span class="lang-option" data-lang="tr">TR</span>
-        </div>
-
-        <!-- Divider -->
-        <div class="mobile-menu-divider"></div>
-
-        <!-- Bottom action row -->
-        <div class="mobile-menu-actions">
-          <button
-            data-search-trigger
-            class="mobile-action-btn flex-1 justify-center"
-            title="Search (⌘K)"
-            aria-label="Open search"
-          >
-            <IconSearch class="size-4" />
-            <span>Search</span>
-          </button>
-          {
-            SITE.lightAndDarkMode && (
-              <button
-                id="theme-btn-mobile"
-                class="mobile-action-btn flex-1 justify-center"
-                title="Toggle theme"
-                aria-label="auto"
-                aria-live="polite"
-              >
-                <IconMoon class="block size-4 dark:hidden" />
-                <IconSunHigh class="hidden size-4 dark:block" />
-                <span class="block dark:hidden">Dark mode</span>
-                <span class="hidden dark:block">Light mode</span>
-              </button>
-            )
-          }
-        </div>
       </div>
     </div>
   </div>
@@ -206,13 +140,9 @@ const isActive = (path: string) => {
     transition-delay: calc(0.08s * var(--i, 0) + 0.12s);
   }
 
-  :is(.mobile-nav-link, .mobile-action-btn):hover {
+  .mobile-nav-link:hover {
     color: var(--accent);
     background: color-mix(in srgb, var(--accent) 8%, transparent);
-  }
-
-  .mobile-action-btn:hover {
-    border-color: color-mix(in srgb, var(--accent) 30%, transparent);
   }
 
   .mobile-nav-link.active {
@@ -238,80 +168,4 @@ const isActive = (path: string) => {
     box-shadow: 0 0 8px color-mix(in srgb, var(--accent) 50%, transparent);
   }
 
-  /* ─── Menu Divider ─── */
-  .mobile-menu-divider {
-    margin: 0.75rem 0.5rem;
-    height: 1px;
-    background: linear-gradient(
-      90deg,
-      transparent,
-      color-mix(in srgb, var(--border) 40%, transparent),
-      transparent
-    );
-  }
-
-  /* ─── Mobile Action Buttons ─── */
-  .mobile-menu-actions {
-    display: flex;
-    gap: 0.5rem;
-    opacity: 0;
-    transform: translateY(6px);
-    transition: opacity 0.3s ease, transform 0.3s ease;
-  }
-
-  .mobile-menu.is-open .mobile-menu-actions {
-    opacity: 1;
-    transform: translateY(0);
-    transition-delay: 0.35s;
-  }
-
-  .mobile-action-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
-    font-size: 0.8125rem;
-    font-weight: 500;
-    color: var(--foreground);
-    border-radius: 0.625rem;
-    border: 1px solid color-mix(in srgb, var(--border) 20%, transparent);
-    background: color-mix(in srgb, var(--background) 50%, transparent);
-    backdrop-filter: blur(8px);
-    transition: color 0.2s ease, background-color 0.2s ease,
-      border-color 0.2s ease;
-    cursor: pointer;
-  }
-
-  /* ─── Language toggle (mobile) ─── */
-  .mobile-lang-toggle {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    padding: 0.5rem 1rem;
-    font-size: 0.8125rem;
-    font-weight: 600;
-    letter-spacing: 0.05em;
-  }
-
-  .lang-divider {
-    color: var(--border);
-    font-weight: 400;
-  }
-
-  .lang-option {
-    color: var(--muted-foreground);
-    cursor: pointer;
-    padding: 0.15rem 0.25rem;
-    border-radius: 0.25rem;
-    transition: color 0.15s ease;
-  }
-
-  .lang-option:hover {
-    color: var(--accent);
-  }
-
-  .lang-option.lang-active {
-    color: var(--accent);
-    font-weight: 700;
-  }
 </style>

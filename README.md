@@ -8,8 +8,7 @@ Personal blog by Alp Cakin — writing about macroeconomics, financial crises, m
 
 - [Astro](https://astro.build) v6 — static site generator
 - [Tailwind CSS](https://tailwindcss.com) v4 — styling
-- [Pagefind](https://pagefind.app) — client-side search
-- [Playfair Display](https://fonts.google.com/specimen/Playfair+Display) — editorial serif headings
+- [Instrument Serif](https://fonts.google.com/specimen/Instrument+Serif) — editorial serif headings
 - Deployed on GitHub Pages via GitHub Actions
 
 ## Development
@@ -17,7 +16,7 @@ Personal blog by Alp Cakin — writing about macroeconomics, financial crises, m
 ```bash
 pnpm install
 pnpm dev          # localhost:4321
-pnpm build        # production build + search index
+pnpm build        # production build
 pnpm preview      # preview production build
 ```
 

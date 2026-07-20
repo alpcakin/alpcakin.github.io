@@ -7,7 +7,6 @@ import Footer from "@/components/Footer.astro";
 import Breadcrumb from "@/components/Breadcrumb.astro";
 import Card from "@/components/Card.astro";
 import Pagination from "@/components/Pagination.astro";
-import "@pagefind/default-ui/css/ui.css";
 import getSortedPosts from "@/utils/getSortedPosts";
 import { SITE } from "@/config";
 
@@ -50,15 +49,8 @@ const totalPosts = page.total;
       </div>
     </div>
 
-    <!-- Posts Toolbar -->
-    <div class="posts-toolbar mb-8">
-      <div class="posts-search-wrapper">
-        <div id="posts-pagefind" class="premium-search"></div>
-      </div>
-    </div>
-
     <!-- Posts Grid -->
-    <div data-default-posts-container class="w-full">
+    <div class="w-full">
       {
         page.data.length === 0 ? (
           <div class="empty-state">
@@ -123,78 +115,6 @@ const totalPosts = page.total;
       }, { signal });
     }
 
-    // Initialize Pagefind local search
-    const container = document.querySelector("#posts-pagefind");
-    if (!container || container.childElementCount > 0) return;
-
-    const onIdle = window.requestIdleCallback || (cb => setTimeout(cb, 1));
-    onIdle(async () => {
-      if (signal.aborted) return;
-      if (container.childElementCount > 0) return;
-
-      // @ts-expect-error
-      const { PagefindUI } = await import("@pagefind/default-ui");
-
-      // Navigation may have occurred while the module was loading (first load, uncached)
-      if (signal.aborted || container.childElementCount > 0) return;
-
-      if (import.meta.env.DEV) {
-        container.innerHTML = `
-          <div class="bg-muted/75 rounded p-4 text-sm mb-4 border border-border">
-            <p><strong>Dev Mode:</strong> Search uses the most recent build index. If no results appear, run <code>pnpm run build</code> first.</p>
-          </div>
-        `;
-        // Removed the early return to allow pagefind to attempt loading the local index
-      }
-
-      new PagefindUI({
-        element: "#posts-pagefind",
-        showImages: false,
-        showSubResults: true,
-      });
-
-      // Toggle default posts grid visibility when typing
-      const input = container.querySelector(".pagefind-ui__search-input") as HTMLInputElement;
-      const defaultContainer = document.querySelector("[data-default-posts-container]") as HTMLElement;
-      
-      if (input && defaultContainer) {
-        const toggleVisibility = () => {
-          const hasValue = input.value.trim().length > 0;
-          if (hasValue) {
-            defaultContainer.style.display = "none";
-          } else {
-            defaultContainer.style.display = "";
-          }
-        };
-
-        input.addEventListener("input", toggleVisibility, { signal });
-        
-        // Handle clear button
-        const clearBtn = container.querySelector(".pagefind-ui__search-clear");
-        if (clearBtn) {
-          clearBtn.addEventListener("click", () => {
-            requestAnimationFrame(() => toggleVisibility());
-          }, { signal });
-        }
-      }
-
-      // Intercept Global Cmd+K / Ctrl+K to focus inline search instead of Modal
-      const handleCmdK = (e: KeyboardEvent) => {
-        if ((e.metaKey || e.ctrlKey) && e.key === "k") {
-          e.preventDefault();
-          e.stopPropagation();
-          if (input) {
-            input.focus();
-            // Scroll to the search box if it's not visible
-            input.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          }
-        }
-      };
-      
-      // Use capture mode to intercept before the global modal listener
-      document.addEventListener("keydown", handleCmdK, { signal, capture: true });
-
-    });
   }
 
   document.addEventListener("astro:page-load", initPostsPage);
@@ -337,15 +257,6 @@ const totalPosts = page.total;
     background: color-mix(in srgb, var(--color-accent) 8%, transparent);
     border: 1px solid color-mix(in srgb, var(--color-accent) 15%, transparent);
     backdrop-filter: blur(8px);
-  }
-
-  /* Toolbar & Search Styles */
-  .posts-toolbar {
-    position: relative;
-    z-index: 20;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
   }
 
   /* Empty State */

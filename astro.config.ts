@@ -60,17 +60,12 @@ export default defineConfig({
 
   fonts: [
     {
-      name: "Wotfard",
-      cssVariable: "--font-wotfard",
+      name: "Space Grotesk",
+      cssVariable: "--font-sans",
       fallbacks: ["sans-serif"],
-      provider: fontProviders.local(),
-      options: {
-        variants: [
-          {
-            src: ["./src/assets/fonts/wotfard.woff2"],
-          },
-        ],
-      },
+      provider: fontProviders.google(),
+      weights: [400, 500, 600, 700],
+      styles: ["normal"],
     },
     {
       name: "Sriracha",
@@ -86,17 +81,12 @@ export default defineConfig({
       },
     },
     {
-      name: "Cartograph CF",
-      cssVariable: "--font-cartograph",
+      name: "Space Mono",
+      cssVariable: "--font-mono",
       fallbacks: ["monospace"],
-      provider: fontProviders.local(),
-      options: {
-        variants: [
-          {
-            src: ["./src/assets/fonts/cartograph-cf.woff2"],
-          },
-        ],
-      },
+      provider: fontProviders.google(),
+      weights: [400, 700],
+      styles: ["normal"],
     },
     {
       name: "Cascadia Code",

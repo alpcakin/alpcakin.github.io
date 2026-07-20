@@ -3,7 +3,6 @@ import { Font } from "astro:assets";
 import { ClientRouter } from "astro:transitions";
 import { PUBLIC_GOOGLE_SITE_VERIFICATION } from "astro:env/client";
 import { SITE } from "@/config";
-import SearchModal from "@/components/SearchModal.astro";
 import "@/styles/global.css";
 
 type Props = {
@@ -56,29 +55,33 @@ const structuredData = pubDatetime
   dir={SITE.dir}
   lang={`${SITE.lang ?? "en"}`}
   class={`${scrollSmooth ? "scroll-smooth" : ""}`}
+  data-theme="dark"
   translate="no"
 >
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="theme-color" content="#A67C3A" />
+    <meta name="theme-color" content="#F4F1E9" />
     <link rel="canonical" href={canonicalURL} />
     <meta name="generator" content={Astro.generator} />
 
     <!-- Load Fonts -->
     <!-- Only preload the primary body font. Others load async to avoid bandwidth contention. -->
     <Font
-      cssVariable="--font-wotfard"
+      cssVariable="--font-sans"
       preload={[{ subset: "latin", weight: 400, style: "normal" }]}
     />
     <Font cssVariable="--font-sriracha" />
-    <Font cssVariable="--font-cartograph" />
+    <Font
+      cssVariable="--font-mono"
+      preload={[{ subset: "latin", weight: 400, style: "normal" }]}
+    />
     <Font cssVariable="--font-cascadia-code" />
-    <!-- Editorial serif font -->
+    <!-- Editorial display serif -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
 
     <!-- Disable auto-translation -->
     <meta name="google" content="notranslate" />
@@ -169,36 +172,6 @@ const structuredData = pubDatetime
     </script>
 
     <ClientRouter />
-
-    <!-- Minimal inline script to prevent FOUC - sets theme immediately -->
-    <script is:inline>
-      (function () {
-        const initialColorScheme = ""; // "light" | "dark"
-        const currentTheme = localStorage.getItem("theme");
-
-        function getPreferTheme() {
-          if (currentTheme) return currentTheme;
-          if (initialColorScheme) return initialColorScheme;
-          return window.matchMedia("(prefers-color-scheme: dark)").matches
-            ? "dark"
-            : "light";
-        }
-
-        const themeValue = getPreferTheme();
-
-        // Set theme immediately to prevent flash
-        document.firstElementChild?.setAttribute("data-theme", themeValue);
-
-        // Export minimal API for external script
-        window.theme = {
-          themeValue: themeValue,
-          getTheme: () => window.theme.themeValue,
-          setTheme: val => {
-            window.theme.themeValue = val;
-          },
-        };
-      })();
-    </script>
   </head>
   <body>
     <!-- Subtle warm backdrop -->
@@ -207,11 +180,6 @@ const structuredData = pubDatetime
     </div>
 
     <slot />
-
-    <SearchModal />
-
-    <!-- Load full theme logic -->
-    <script src="../scripts/theme.ts"></script>
   </body>
 </html>
 
@@ -235,10 +203,11 @@ const structuredData = pubDatetime
     transform: translate(var(--site-cx, 50vw), var(--site-cy, 50vh)) translateZ(0);
     background: radial-gradient(
       circle,
-      color-mix(in oklab, var(--accent) 8%, transparent) 0%,
-      color-mix(in oklab, var(--accent) 3%, transparent) 40%,
+      color-mix(in oklab, var(--accent) 20%, transparent) 0%,
+      color-mix(in oklab, var(--accent) 8%, transparent) 40%,
       transparent 70%
     );
+    mix-blend-mode: multiply;
     opacity: 0;
     transition: opacity 0.5s ease;
     pointer-events: none;

@@ -26,7 +26,8 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 
-# pagefind
+# Claude Code local state
+.claude/settings.local.json
+.claude/worktrees/
 
-public/pagefind
 .vercel

@@ -2,10 +2,10 @@ export const SITE = {
   website: "https://www.alpcakin.com/",
   author: "Alp Çakın",
   profile: "https://github.com/alpcakin",
-  desc: "Writing about macroeconomics, financial crises, market dynamics, and the quantitative side of how markets behave.",
+  desc: "Full-stack developer building web and mobile products — from a POS platform for small retailers to a fintech alert system. Also writes about macroeconomics and market dynamics.",
   title: "alpcakin",
   ogImage: "",
-  lightAndDarkMode: true,
+  lightAndDarkMode: false,
   postPerIndex: 6,
   postPerPage: 8,
   scheduledPostMargin: 15 * 60 * 1000, // 15 minutes
