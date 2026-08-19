@@ -3,7 +3,7 @@
     "apps": [],
     "details": [
       {
-        "appID": "REPLACE_WITH_APPLE_TEAM_ID.com.veresiye.app",
+        "appID": "3BVBH83DC8.com.odesh.app",
         "paths": ["/join/*", "/join-group/*"]
       }
     ]
