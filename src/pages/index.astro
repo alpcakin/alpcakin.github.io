@@ -4,67 +4,144 @@ import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
 import { SITE } from "@/config";
 import { SOCIALS } from "@/constants";
+import { Image } from "astro:assets";
+import odeshHome from "@/assets/images/odesh/01-ana-sayfa.png";
+import odeshExpense from "@/assets/images/odesh/02-harcama.png";
+import odeshGroup from "@/assets/images/odesh/04-grup.png";
+import odeshLedger from "@/assets/images/odesh/05-defter.png";
 
 const projects = [
   {
-    title: "alpcakin.com",
-    meta: "This site",
+    title: "lore",
+    meta: "Open source · Rust CLI",
     description:
-      "My portfolio and blog, built from scratch — a light editorial UI with a full essay archive and client-side search.",
-    tags: ["Astro", "TypeScript", "Tailwind CSS", "Pagefind"],
-    link: { label: "Source ↗", href: "https://github.com/alpcakin/alpcakin.github.io" },
+      "A command library that lives in your shell. Press ctrl+g, type a few words of what you're trying to do, and the finished command lands on your prompt — lore never runs anything itself.",
+    highlights: [
+      "Full-screen fuzzy picker (ratatui) backed by SQLite; frequently used and pinned commands rise to the top, and placeholders remember the arguments you typed last time.",
+      "Shell integration for zsh, bash, fish and PowerShell, installed by a single reversible profile line.",
+      "Optional sync of your library across machines through a private git repository you own — nothing is sent anywhere else.",
+      "Published to crates.io, Homebrew and Scoop, with checksum-verified installers, CI and a documentation site.",
+    ],
+    tags: ["Rust", "SQLite", "ratatui", "Git sync", "GitHub Actions"],
+    links: [
+      { label: "GitHub ↗", href: "https://github.com/alpcakin/lore" },
+      { label: "Docs ↗", href: "https://lore.alpcakin.com" },
+      { label: "crates.io ↗", href: "https://crates.io/crates/cmdlore" },
+    ],
   },
   {
-    title: "Odesh",
-    meta: "Mobile App",
+    title: "odesh",
+    meta: "Mobile app · Pre-release",
     description:
-      "A React Native app for tracking and settling shared debts between friends and groups, with Supabase RPC functions running the backend logic.",
-    tags: ["React Native", "Supabase", "TypeScript"],
-    link: null,
+      "A mobile app for tracking informal debts and shared expenses between friends and groups — with automatic settlement suggestions, a payment flow and customisable reminders. It keeps the ledger; the money always moves through your own bank.",
+    highlights: [
+      "Designed the PostgreSQL schema and the settlement logic, including optional debt simplification that routes a group's balances through fewer payments.",
+      "Backend on Supabase: auth, row-level security, Postgres RPC functions, and edge functions for push notifications, reminders and account deletion — covered by a pgTAP database test suite.",
+      "Built the React Native (Expo) client; currently in end-to-end testing ahead of rollout to the first test users.",
+    ],
+    tags: ["Supabase", "PostgreSQL", "RLS", "Edge Functions", "React Native", "Expo"],
+    links: [{ label: "odesh.app ↗", href: "https://odesh.app" }],
   },
   {
-    title: "Bayerpos",
-    meta: "Cofounder",
+    title: "BayerPOS",
+    meta: "Co-founder · 2025 – 2026",
     description:
-      "An offline-first POS system for small retail shops in Turkey. My part: the backend, database, and the invoice-OCR pipeline built on Gemini.",
-    tags: ["TypeScript", "PostgreSQL", "Gemini", "pgvector"],
-    link: { label: "bayerpos.com ↗", href: "https://bayerpos.com" },
+      "Point-of-sale and inventory software for tobacco and convenience shops in Turkey, built with a small team. Offline-first, so the till keeps working when the connection doesn't, and syncs when it comes back.",
+    highlights: [
+      "Owned the database layer on PostgreSQL / Supabase.",
+      "Built an AI invoice-OCR pipeline: supplier invoice lines are matched to the product catalogue through text-similarity search and an alias table, with an LLM making the final call, and stock is updated automatically.",
+      "Set up logging and observability, and contributed to the sync layer between offline and online data.",
+    ],
+    tags: ["PostgreSQL", "Supabase", "pgvector", "LLM / OCR", "SvelteKit", "Tauri"],
+    links: [],
   },
   {
     title: "Financial Insights & Alert System",
-    meta: "Thesis · Ongoing",
+    meta: "Bachelor's thesis · 2026 – 2027",
     description:
-      "A full-stack fintech app that processes real-time market data and sends automated alerts — my ongoing thesis project.",
-    tags: ["FastAPI", "Flutter", "Supabase"],
-    link: null,
+      "A FastAPI backend that ingests financial news and market data, runs AI analysis on it and delivers personalised insights and alerts to a Flutter mobile client, based on each user's portfolio and followed topics.",
+    highlights: [
+      "Pluggable AI-provider layer: one prompt, one JSON schema and one validation routine shared by OpenAI, Gemini and Grok. Each article is analysed by every enabled model in parallel and the results are stored side by side, so the models can be compared.",
+      "Scheduled news, volatility and report jobs (APScheduler), Supabase/PostgreSQL storage, and push alerts through Firebase Cloud Messaging.",
+    ],
+    tags: ["Python", "FastAPI", "PostgreSQL", "OpenAI · Gemini · Grok", "FCM", "Flutter"],
+    links: [],
   },
+];
+
+const experience = [
+  {
+    role: "Software Engineering Intern",
+    company: "Doğuş Teknoloji",
+    place: "Istanbul",
+    period: "Jul – Sep 2026",
+    points: [
+      "Maintained Dockerfiles and Kubernetes deployment manifests for enterprise backend services, hardening images and manifests based on scan results.",
+      "Triaged and remediated KICS (IaC misconfiguration) and Trivy (container vulnerability) findings across the security pipeline, working with the infrastructure team.",
+      "Evaluated alternatives to the existing Elastic APM and Grafana (Loki / Prometheus / Tempo) stacks — including SigNoz and OpenObserve — and presented a comparison and recommendation to the team.",
+      "Built a working observability demo: an OpenTelemetry Collector exporting logs, metrics and traces to ClickHouse and Elasticsearch.",
+    ],
+    tags: ["Docker", "Kubernetes", "KICS", "Trivy", "OpenTelemetry", "ClickHouse", "Elasticsearch"],
+  },
+];
+
+const stack = [
+  ".NET",
+  "FastAPI",
+  "PostgreSQL",
+  "Supabase",
+  "Docker",
+  "Kubernetes",
+  "OpenTelemetry",
+  "Claude Code",
+  "LLM APIs",
+  "React Native",
+];
+
+const odeshShots = [
+  { src: odeshHome, caption: "Home — who owes whom", alt: "odesh home screen showing what friends owe you and what you owe them" },
+  { src: odeshExpense, caption: "Adding an expense", alt: "odesh screen for entering a new expense amount" },
+  { src: odeshGroup, caption: "Group expenses", alt: "odesh group screen listing shared expenses and your share of each" },
+  { src: odeshLedger, caption: "Friends without the app", alt: "odesh ledger for a friend who does not use the app, with open debts and a settle-up button" },
 ];
 
 const capabilities = [
   {
-    group: "Product & Backend",
+    group: "Languages & Backend",
+    items: ["C#", "Python", "TypeScript", "SQL", ".NET", "FastAPI", "REST API design"],
+  },
+  {
+    group: "Data",
     items: [
-      "TypeScript",
-      "C#",
-      "Next.js",
-      "React Native",
-      "Flutter",
-      "FastAPI",
-      "Supabase",
       "PostgreSQL",
-      "Astro & Tailwind",
-      "Git / GitHub",
+      "Supabase — RLS, RPC, edge functions",
+      "Oracle PL/SQL",
+      "Relational schema design",
+      "Text-similarity search & pgvector",
+      "SQLite",
     ],
   },
   {
-    group: "Data & AI",
+    group: "DevOps & Observability",
     items: [
-      "Claude",
-      "OpenAI API",
-      "Gemini — invoice OCR",
-      "pgvector & embeddings",
-      "Python — Pandas, NumPy",
-      "SQL — PL/SQL, window functions",
+      "Docker",
+      "Kubernetes manifests",
+      "KICS & Trivy",
+      "OpenTelemetry Collector",
+      "ClickHouse & Elasticsearch",
+      "Grafana stack",
+      "Azure · GitHub Actions",
+    ],
+  },
+  {
+    group: "AI & Tooling",
+    items: [
+      "Claude Code",
+      "Claude API (Anthropic SDK)",
+      "Gemini & OpenAI APIs",
+      "LLM pipelines — OCR, matching, summaries",
+      "Embeddings",
+      "React Native · Flutter · SvelteKit",
     ],
   },
 ];
@@ -76,15 +153,25 @@ const capabilities = [
   <main id="main-content" class="relative">
     <!-- ═══════════ HERO ═══════════ -->
     <section id="hero" class="wide-section hero-section" data-reveal>
-      <p class="hero-eyebrow">Full-Stack Developer &nbsp;—&nbsp; Pécs, Hungary</p>
+      <p class="hero-eyebrow">Backend Developer &nbsp;—&nbsp; Pécs, Hungary</p>
       <h1 class="hero-title">
         Alp <em>Çakın</em><span class="hero-dot">.</span>
       </h1>
       <div class="hero-bottom-row">
-        <p class="hero-subtitle">
-          I build web &amp; mobile products end to end — and write about the
-          markets that move them.
-        </p>
+        <div class="hero-intro">
+          <p class="hero-subtitle">
+            I design APIs and databases, ship them in containers, and wire AI
+            into products people actually use.
+          </p>
+          <p class="hero-status">
+            <span class="hero-status-dot" aria-hidden="true"></span>
+            Final-year CS Engineering · graduating Jan 2027 · open to backend roles
+          </p>
+          <div class="hero-actions">
+            <a href="#work" class="pill-link pill-link--solid">See the work</a>
+            <a href="#contact" class="pill-link">Get in touch</a>
+          </div>
+        </div>
         <p class="hero-scroll">
           <span class="hero-scroll-line" aria-hidden="true"></span>
           Scroll
@@ -93,26 +180,20 @@ const capabilities = [
     </section>
 
     <!-- ═══════════ MARQUEE ═══════════ -->
-    <section class="marquee-section" data-reveal>
+    <section class="marquee-section" data-reveal aria-label="Tech stack">
       <div class="marquee-track">
-        <span class="marquee-copy">
-          Full-Stack&nbsp;&nbsp;<span class="marquee-sep">/</span>&nbsp;&nbsp;React
-          Native&nbsp;&nbsp;<span class="marquee-sep">/</span>&nbsp;&nbsp;FastAPI&nbsp;&nbsp;<span
-            class="marquee-sep">/</span>&nbsp;&nbsp;Supabase&nbsp;&nbsp;<span
-            class="marquee-sep">/</span>&nbsp;&nbsp;Applied&nbsp;AI&nbsp;&nbsp;<span
-            class="marquee-sep">/</span>&nbsp;&nbsp;Macro&nbsp;Writer&nbsp;&nbsp;<span
-            class="marquee-sep">/</span>&nbsp;&nbsp;Ships&nbsp;Fast&nbsp;&nbsp;<span
-            class="marquee-sep">/</span>&nbsp;&nbsp;
-        </span>
-        <span class="marquee-copy" aria-hidden="true">
-          Full-Stack&nbsp;&nbsp;<span class="marquee-sep">/</span>&nbsp;&nbsp;React
-          Native&nbsp;&nbsp;<span class="marquee-sep">/</span>&nbsp;&nbsp;FastAPI&nbsp;&nbsp;<span
-            class="marquee-sep">/</span>&nbsp;&nbsp;Supabase&nbsp;&nbsp;<span
-            class="marquee-sep">/</span>&nbsp;&nbsp;Applied&nbsp;AI&nbsp;&nbsp;<span
-            class="marquee-sep">/</span>&nbsp;&nbsp;Macro&nbsp;Writer&nbsp;&nbsp;<span
-            class="marquee-sep">/</span>&nbsp;&nbsp;Ships&nbsp;Fast&nbsp;&nbsp;<span
-            class="marquee-sep">/</span>&nbsp;&nbsp;
-        </span>
+        {
+          [false, true].map(hidden => (
+            <span class="marquee-copy" aria-hidden={hidden ? "true" : undefined}>
+              {stack.map(item => (
+                <>
+                  {item}
+                  <span class="marquee-sep">&nbsp;&nbsp;/&nbsp;&nbsp;</span>
+                </>
+              ))}
+            </span>
+          ))
+        }
       </div>
     </section>
 
@@ -128,34 +209,64 @@ const capabilities = [
         />
         <div class="about-copy" data-reveal>
           <h2 class="about-heading">
-            Student, builder, and <em>shipper</em> — in that order of
-            stubbornness.
+            Backend first, <em>product</em> always.
           </h2>
           <div class="about-prose">
             <p>
-              I'm a Computer Science Engineering student at the University of
-              Pécs, Hungary, graduating January 2027. I build full-stack
-              products — React Native and Flutter on the frontend, FastAPI
-              and Supabase on the backend — with a growing focus on applied
-              AI: invoice OCR, embeddings, and pgvector experience along the
-              way.
+              I'm a final-year Computer Science Engineering student at the
+              University of Pécs, Hungary, graduating in January 2027. My focus
+              is backend engineering: API design, relational data modelling in
+              PostgreSQL, and everything it takes to get a service into
+              production — Dockerfiles, Kubernetes manifests, security scanning
+              and observability.
             </p>
             <p>
-              Right now I'm a cofounder at <strong>Bayerpos</strong>,
-              building the OCR and backend behind an offline-first POS
-              platform for small retail shops in Turkey. I also maintain
-              <strong>Odesh</strong>, a shared-debt tracker, and I'm building
-              a fintech alert system as my thesis.
+              This summer I interned at <strong>Doğuş Teknoloji</strong> in
+              Istanbul, hardening container images and deployment manifests
+              against KICS and Trivy findings and building an OpenTelemetry
+              pipeline into ClickHouse and Elasticsearch. Outside of work I ship
+              my own products: <strong>odesh</strong>, a shared-expense app on
+              Supabase; <strong>lore</strong>, an open-source Rust CLI; and the
+              database and AI invoice-OCR pipeline behind <strong>BayerPOS</strong>.
             </p>
             <p>
-              I also write about macroeconomics and market dynamics — worked
-              through in public, not academic summaries — and trade forex on
-              the side as a funded trader with{" "}
-              <a href="https://the5ers.com" target="_blank" rel="noopener noreferrer">The5ers</a>.
+              I work AI-native. Claude Code is part of my daily workflow for
+              reading, refactoring and testing code, and I build with LLM APIs
+              — Claude, Gemini, OpenAI — inside real pipelines: document OCR,
+              catalogue matching, and multi-model news analysis where every
+              answer is validated against a schema before it is trusted.
             </p>
           </div>
+          <dl class="about-facts">
+            <div><dt>Based in</dt><dd>Pécs, Hungary</dd></div>
+            <div><dt>Education</dt><dd>B.Sc. CS Engineering, Univ. of Pécs</dd></div>
+            <div><dt>Languages</dt><dd>Turkish (native) · English (C1)</dd></div>
+          </dl>
         </div>
       </div>
+    </section>
+
+    <!-- ═══════════ EXPERIENCE ═══════════ -->
+    <section id="experience" class="wide-section section section--tight">
+      <p class="section-label" data-reveal>Experience</p>
+      <ul class="exp-list">
+        {
+          experience.map(job => (
+            <li class="exp-item" data-reveal>
+              <div class="exp-head">
+                <h3 class="exp-role">
+                  {job.role} <span class="exp-at">at</span> <em>{job.company}</em>
+                </h3>
+                <p class="exp-meta">{job.place} · {job.period}</p>
+              </div>
+              <ul class="exp-points">
+                {job.points.map(point => <li>{point}</li>)}
+              </ul>
+              <p class="work-tags">{job.tags.join("   ·   ")}</p>
+            </li>
+          ))
+        }
+      </ul>
     </section>
 
     <!-- ═══════════ WORK ═══════════ -->
@@ -187,16 +298,23 @@ const capabilities = [
                 <div class="work-panel-inner">
                   <div class="work-panel-content">
                     <p class="work-desc">{project.description}</p>
+                    <ul class="work-highlights">
+                      {project.highlights.map(point => <li>{point}</li>)}
+                    </ul>
                     <p class="work-tags">{project.tags.join("   ·   ")}</p>
-                    {project.link && (
-                      <a
-                        href={project.link.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="work-link"
-                      >
-                        {project.link.label}
-                      </a>
+                    {project.links.length > 0 && (
+                      <p class="work-links">
+                        {project.links.map(link => (
+                          <a
+                            href={link.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="work-link"
+                          >
+                            {link.label}
+                          </a>
+                        ))}
+                      </p>
                     )}
                   </div>
                 </div>
@@ -205,6 +323,41 @@ const capabilities = [
           ))
         }
       </ul>
+    </section>
+
+    <!-- ═══════════ ODESH SHOWCASE ═══════════ -->
+    <section id="odesh" class="showcase-section" data-reveal>
+      <div class="wide-section showcase-inner">
+        <div class="showcase-copy">
+          <p class="section-label">In focus — odesh</p>
+          <h2 class="showcase-heading">Who owes whom, <em>at a glance</em>.</h2>
+          <p class="showcase-sub">
+            Friends, flatmates and trips on one ledger. Split an expense, see
+            net balances per person and per group, and settle up by bank
+            transfer — odesh never holds or moves money, it just keeps the
+            account straight.
+          </p>
+          <a href="https://odesh.app" target="_blank" rel="noopener noreferrer" class="pill-link">
+            Visit odesh.app ↗
+          </a>
+        </div>
+        <div class="showcase-shots">
+          {
+            odeshShots.map(shot => (
+              <figure class="showcase-shot">
+                <Image
+                  src={shot.src}
+                  alt={shot.alt}
+                  widths={[280, 440]}
+                  sizes="(max-width: 640px) 62vw, 220px"
+                  loading="lazy"
+                />
+                <figcaption>{shot.caption}</figcaption>
+              </figure>
+            ))
+          }
+        </div>
+      </div>
     </section>
 
     <!-- ═══════════ CAPABILITIES ═══════════ -->
@@ -732,6 +885,289 @@ const capabilities = [
 
   .contact-link:hover {
     color: var(--accent);
+  }
+
+  /* ─── Hero extras ─── */
+  .hero-intro {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1.1rem, 2.2vw, 1.5rem);
+  }
+
+  .hero-status {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--foreground);
+  }
+
+  .hero-status-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 999px;
+    background: var(--accent);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 18%, transparent);
+    flex-shrink: 0;
+  }
+
+  .hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .pill-link {
+    display: inline-flex;
+    align-items: center;
+    align-self: flex-start;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--foreground);
+    border: 1px solid var(--foreground);
+    border-radius: 999px;
+    padding: 0.65rem 1.3rem;
+    transition: background 0.25s, color 0.25s, border-color 0.25s;
+  }
+
+  .pill-link:hover {
+    background: var(--foreground);
+    color: var(--background);
+  }
+
+  .pill-link--solid {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--background);
+  }
+
+  .pill-link--solid:hover {
+    background: var(--foreground);
+    border-color: var(--foreground);
+  }
+
+  /* ─── About facts ─── */
+  .about-facts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 1rem 2rem;
+    margin: clamp(2rem, 4vw, 2.75rem) 0 0;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .about-facts dt {
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted-foreground);
+  }
+
+  .about-facts dd {
+    margin: 0.3rem 0 0;
+    font-size: 0.98rem;
+    color: var(--foreground);
+  }
+
+  /* ─── Experience ─── */
+  .section--tight {
+    padding-top: 0;
+  }
+
+  .exp-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .exp-item {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    padding-block: clamp(1.5rem, 3vw, 2.25rem);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .exp-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem 1.5rem;
+  }
+
+  .exp-role {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: clamp(1.6rem, 3.6vw, 2.5rem);
+    line-height: 1.1;
+    color: var(--foreground);
+  }
+
+  .exp-role em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .exp-at {
+    color: var(--muted-foreground);
+  }
+
+  .exp-meta {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted-foreground);
+  }
+
+  .exp-points,
+  .work-highlights {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    max-width: 72ch;
+    font-size: clamp(0.98rem, 1.35vw, 1.1rem);
+    line-height: 1.6;
+    color: var(--muted-foreground);
+  }
+
+  .exp-points li,
+  .work-highlights li {
+    position: relative;
+    padding-left: 1.4rem;
+  }
+
+  .exp-points li::before,
+  .work-highlights li::before {
+    content: "—";
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+  }
+
+  /* ─── Work extras ─── */
+  .work-links {
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+  }
+
+  /* ─── odesh showcase ─── */
+  .showcase-section {
+    border-block: 1px solid var(--border);
+    background: var(--muted);
+    overflow: hidden;
+  }
+
+  .showcase-inner {
+    display: grid;
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    align-items: center;
+    gap: clamp(2.5rem, 5vw, 4.5rem);
+    padding-block: clamp(4rem, 9vw, 7rem);
+  }
+
+  .showcase-copy {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .showcase-heading {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-size: clamp(2.2rem, 5vw, 3.9rem);
+    line-height: 1.04;
+    letter-spacing: -0.015em;
+    color: var(--foreground);
+  }
+
+  .showcase-heading em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .showcase-sub {
+    margin: clamp(1.25rem, 2.5vw, 1.75rem) 0 clamp(1.5rem, 3vw, 2rem);
+    max-width: 44ch;
+    font-size: clamp(1rem, 1.4vw, 1.15rem);
+    line-height: 1.65;
+    color: var(--muted-foreground);
+  }
+
+  .showcase-shots {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(0.75rem, 1.5vw, 1.25rem);
+  }
+
+  .showcase-shot {
+    margin: 0;
+  }
+
+  .showcase-shot:nth-child(even) {
+    transform: translateY(2.5rem);
+  }
+
+  .showcase-shot img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 9 / 16;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    box-shadow: 0 18px 40px -22px color-mix(in srgb, var(--foreground) 45%, transparent);
+  }
+
+  .showcase-shot figcaption {
+    margin-top: 0.7rem;
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted-foreground);
+  }
+
+  @media (max-width: 900px) {
+    .showcase-inner {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .showcase-shots {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      margin-inline: calc(-1 * clamp(1.25rem, 5vw, 4.5rem));
+      padding-inline: clamp(1.25rem, 5vw, 4.5rem);
+      padding-bottom: 0.5rem;
+    }
+
+    .showcase-shot {
+      flex: 0 0 58%;
+      scroll-snap-align: start;
+    }
+
+    .showcase-shot:nth-child(even) {
+      transform: none;
+    }
   }
 
   /* ─── Scroll reveal ─── */

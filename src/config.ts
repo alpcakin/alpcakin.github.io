@@ -2,7 +2,7 @@ export const SITE = {
   website: "https://www.alpcakin.com/",
   author: "Alp Çakın",
   profile: "https://github.com/alpcakin",
-  desc: "Full-stack developer building web and mobile products — from a POS platform for small retailers to a fintech alert system. Also writes about macroeconomics and market dynamics.",
+  desc: "Backend developer in Pécs, Hungary — APIs, PostgreSQL, Docker and Kubernetes, observability, and AI built into real products like odesh, BayerPOS and lore. Also writes about macroeconomics and markets.",
   title: "alpcakin",
   ogImage: "",
   lightAndDarkMode: false,
