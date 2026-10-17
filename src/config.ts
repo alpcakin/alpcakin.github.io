@@ -2,7 +2,7 @@ export const SITE = {
   website: "https://www.alpcakin.com/",
   author: "Alp Çakın",
   profile: "https://github.com/alpcakin",
-  desc: "Backend developer in Pécs, Hungary — APIs, PostgreSQL, Docker and Kubernetes, observability, and AI built into real products like odesh, BayerPOS and lore. Also writes about macroeconomics and markets.",
+  desc: "Software engineer in Pécs, Hungary, building software end to end — backend services, mobile apps and command-line tools like odesh, BayerPOS and lore. Learning systems programming in Rust. Also writes about economics and technology.",
   title: "alpcakin",
   ogImage: "",
   lightAndDarkMode: false,
@@ -11,12 +11,6 @@ export const SITE = {
   scheduledPostMargin: 15 * 60 * 1000, // 15 minutes
   showArchives: false,
   showGalleries: false,
-  showBackButton: true,
-  editPost: {
-    enabled: false,
-    text: "Edit this post",
-    url: "https://github.com/alpcakin/alpcakin.github.io/edit/main/",
-  },
   dynamicOgImage: true,
   dir: "ltr",
   lang: "en",

@@ -1,37 +1,89 @@
 ---
+/** Text share links for the current page, plus a copy-link button. */
 import { SHARE_LINKS } from "@/constants";
-import LinkButton from "./LinkButton.astro";
 
-const URL = Astro.url;
+const url = Astro.url.href;
 ---
 
-{
-  SHARE_LINKS.length > 0 && (
-    <div class="flex shrink-0 flex-col items-center gap-2 sm:items-end">
-      <span class="font-mono text-[10px] tracking-wider text-foreground/40 uppercase select-none">
-        Compartir
-      </span>
-      <div class="flex items-center gap-1">
-        {SHARE_LINKS.map(social => (
-          <LinkButton
-            href={`${social.href + URL}`}
+<div class="share">
+  <span class="dim">share:</span>
+  <ul class="share-list">
+    {
+      SHARE_LINKS.map(link => (
+        <li>
+          <a
+            href={`${link.href}${encodeURIComponent(url)}`}
+            class="lk lk--ul"
             target="_blank"
             rel="noopener noreferrer"
-            class="share-btn inline-flex size-8 items-center justify-center rounded-lg border border-border/20 bg-muted/5 transition-all duration-200 hover:border-accent/40 hover:bg-accent/10 hover:text-accent hover:shadow-sm hover:shadow-accent/10"
-            title={social.linkTitle}
+            title={link.linkTitle}
           >
-            <social.icon class="size-4 fill-transparent stroke-current stroke-2" />
-            <span class="sr-only">{social.linkTitle}</span>
-          </LinkButton>
-        ))}
-      </div>
-    </div>
-  )
-}
+            {link.name}
+          </a>
+        </li>
+      ))
+    }
+    <li>
+      <button type="button" class="share-copy" data-copy-url={url}>
+        copy link
+      </button>
+    </li>
+  </ul>
+</div>
 
 <style>
-  .share-btn {
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
+  .share {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 6px 14px;
+    font-size: 14px;
+  }
+
+  .share-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .share-copy {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--foreground);
+    font: inherit;
+    text-decoration: underline;
+    text-decoration-color: var(--border-strong);
+    text-underline-offset: 4px;
+  }
+
+  .share-copy:hover {
+    background: var(--foreground);
+    color: var(--background);
   }
 </style>
+
+<script>
+  function initCopy() {
+    document
+      .querySelectorAll<HTMLButtonElement>("[data-copy-url]")
+      .forEach(btn =>
+        btn.addEventListener("click", async () => {
+          try {
+            await navigator.clipboard.writeText(
+              btn.dataset.copyUrl ?? location.href
+            );
+            btn.textContent = "copied ✓";
+          } catch {
+            btn.textContent = "copy failed";
+          }
+          setTimeout(() => (btn.textContent = "copy link"), 1400);
+        })
+      );
+  }
+
+  document.addEventListener("astro:page-load", initCopy);
+</script>

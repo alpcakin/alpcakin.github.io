@@ -34,11 +34,17 @@ async function loadGoogleFonts(
 ): Promise<
   Array<{ name: string; data: ArrayBuffer; weight: number; style: string }>
 > {
+  // Same face as the site (IBM Plex Mono), subset to the characters used.
   const fontsConfig = [
-    { name: "Noto Sans", font: "Noto+Sans", weight: 400, style: "normal" },
     {
-      name: "Noto Sans",
-      font: "Noto+Sans",
+      name: "IBM Plex Mono",
+      font: "IBM+Plex+Mono",
+      weight: 400,
+      style: "normal",
+    },
+    {
+      name: "IBM Plex Mono",
+      font: "IBM+Plex+Mono",
       weight: 700,
       style: "normal",
     },

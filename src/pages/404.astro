@@ -1,32 +1,125 @@
 ---
 import Layout from "@/layouts/Layout.astro";
-import Header from "@/components/Header.astro";
-import Footer from "@/components/Footer.astro";
-import LinkButton from "@/components/LinkButton.astro";
+import Pane from "@/components/tui/Pane.astro";
 import { SITE } from "@/config";
 ---
 
-<Layout title={`404 Not Found | ${SITE.title}`}>
-  <div id="default-404">
-    <Header />
-
-    <main
-      id="main-content"
-      class="app-layout flex flex-1 items-center justify-center"
-    >
-      <div class="mb-14 flex flex-col items-center justify-center">
-        <h1 class="text-9xl font-bold text-accent">404</h1>
-        <span aria-hidden="true">¯\_(ツ)_/¯</span>
-        <p class="mt-4 text-2xl sm:text-3xl">Page not found</p>
-        <LinkButton
-          href="/"
-          class="my-6 text-lg underline decoration-dashed underline-offset-8"
+<Layout
+  title={`404 Not Found | ${SITE.title}`}
+  mode="E404"
+  hint="no such file or directory"
+>
+  <main id="main-content" class="shell nf-shell">
+    <Pane id="error" title="bash" level={0} focused>
+      <p class="nf-line">
+        <span class="accent" aria-hidden="true">$</span> cd <span
+          data-missing-path>/this-page</span
         >
-          Back to home
-        </LinkButton>
-      </div>
-    </main>
+      </p>
+      <p class="nf-line nf-err">
+        bash: cd: <span data-missing-path>/this-page</span>: No such file or
+        directory
+      </p>
 
-    <Footer />
-  </div>
+      <h1 class="nf-title">404 — page not found</h1>
+      <p class="nf-copy soft">
+        The page you asked for isn't here. It may have moved, or the link has a
+        typo.
+      </p>
+
+      <ul class="nf-options">
+        <li>
+          <a href="/" class="nf-option">
+            <span class="accent" aria-hidden="true">$</span> cd ~
+            <span class="dim">— home &amp; projects</span>
+          </a>
+        </li>
+        <li>
+          <a href="/posts/" class="nf-option">
+            <span class="accent" aria-hidden="true">$</span> ls ~/posts
+            <span class="dim">— essays</span>
+          </a>
+        </li>
+        <li>
+          <a href="/#contact" class="nf-option">
+            <span class="accent" aria-hidden="true">$</span> mail alp
+            <span class="dim">— contact</span>
+          </a>
+        </li>
+      </ul>
+      <p class="nf-line">
+        <span class="accent" aria-hidden="true">$</span><span
+          class="cursor"
+          aria-hidden="true"></span>
+      </p>
+    </Pane>
+  </main>
 </Layout>
+
+<script>
+  /** The 404 page is served for any missing URL; show the one requested. */
+  function showMissingPath() {
+    const path = decodeURIComponent(location.pathname);
+    document
+      .querySelectorAll<HTMLElement>("[data-missing-path]")
+      .forEach(el => (el.textContent = path));
+    const status = document.querySelector<HTMLElement>("[data-status-path]");
+    if (status) status.textContent = `~${path}`;
+  }
+  document.addEventListener("astro:page-load", showMissingPath);
+</script>
+
+<style>
+  .nf-shell {
+    max-width: 900px;
+    justify-content: center;
+  }
+
+  .nf-line {
+    margin: 0 0 6px;
+    overflow-wrap: anywhere;
+  }
+
+  .nf-err {
+    color: var(--danger);
+  }
+
+  .nf-title {
+    margin: 32px 0 0;
+    font-size: clamp(28px, 4vw, 44px);
+    line-height: 1.15;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+  }
+
+  .nf-copy {
+    margin: 12px 0 28px;
+    max-width: 56ch;
+  }
+
+  .nf-options {
+    margin: 0 0 24px;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .nf-option {
+    display: block;
+    padding: 10px 8px;
+    transition:
+      background-color 0.12s ease,
+      color 0.12s ease;
+  }
+
+  .nf-option:hover {
+    background: var(--foreground);
+    color: var(--background);
+  }
+
+  .nf-option:hover :is(.accent, .dim) {
+    color: inherit;
+  }
+</style>

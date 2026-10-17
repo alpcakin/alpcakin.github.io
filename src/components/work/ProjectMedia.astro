@@ -1,0 +1,386 @@
+---
+/**
+ * The preview well of a project: a looping recording, a screenshot gallery or
+ * a pipeline diagram (see `ProjectMedia` in src/data/projects.ts).
+ *
+ * Recordings never autoplay for `prefers-reduced-motion`, pause when scrolled
+ * out of view or when their tab is hidden, and always have a pause control.
+ */
+import { Image, getImage } from "astro:assets";
+import type { ProjectMedia } from "@/data/projects";
+
+type Props = {
+  media: ProjectMedia;
+  /** Load eagerly (the first, initially visible tab). */
+  eager?: boolean;
+};
+
+const { media, eager = false } = Astro.props;
+
+const shots =
+  media.type === "gallery"
+    ? await Promise.all(
+        media.shots.map(async shot => ({
+          ...shot,
+          full: await getImage({
+            src: shot.image,
+            width: 1080,
+            format: "webp",
+          }),
+        }))
+      )
+    : [];
+---
+
+<figure class="media" data-media={media.type}>
+  <figcaption class="media-bar">
+    <span class="media-title">
+      <span class="accent" aria-hidden="true">●</span>
+      {media.title}
+    </span>
+    {
+      media.type === "video" && (
+        <button type="button" class="media-toggle" data-video-toggle hidden>
+          pause
+        </button>
+      )
+    }
+  </figcaption>
+
+  {
+    media.type === "video" && (
+      <video
+        class="media-video"
+        muted
+        loop
+        playsinline
+        preload={eager ? "metadata" : "none"}
+        poster={media.poster}
+        width={media.width}
+        height={media.height}
+        aria-label={media.label}
+        data-autoplay
+      >
+        {media.sources.map(source => (
+          <source src={source.src} type={source.type} />
+        ))}
+      </video>
+    )
+  }
+
+  {
+    media.type === "gallery" && (
+      <ul class="shots">
+        {shots.map(shot => (
+          <li class="shot">
+            <a
+              href={shot.full.src}
+              class="shot-link"
+              data-zoom
+              data-astro-reload
+              data-caption={shot.caption}
+              aria-label={`Enlarge screenshot: ${shot.caption}`}
+            >
+              <Image
+                src={shot.image}
+                alt={shot.alt}
+                widths={[240, 360, 480]}
+                sizes="(max-width: 700px) 45vw, 240px"
+                loading={eager ? "eager" : "lazy"}
+                class="shot-img"
+              />
+            </a>
+            <p class="shot-cap">{shot.caption}</p>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+
+  {
+    media.type === "flow" && (
+      <div class="flow">
+        <ol class="flow-steps">
+          {media.steps.map((step, i) => (
+            <li class="flow-step">
+              <div class="flow-box">
+                <span class="flow-label">{step.label}</span>
+                {step.detail && <span class="flow-detail">{step.detail}</span>}
+                {step.parallel && (
+                  <ul class="flow-par">
+                    {step.parallel.map(item => (
+                      <li>{item}</li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+              {i < media.steps.length - 1 && (
+                <span class="flow-arrow" aria-hidden="true">
+                  →
+                </span>
+              )}
+            </li>
+          ))}
+        </ol>
+      </div>
+    )
+  }
+</figure>
+
+<style>
+  .media {
+    container-type: inline-size;
+    margin: 0;
+    border: 1px solid var(--border);
+    background: var(--surface-sunken);
+  }
+
+  /* On wide wells every preview gets the recording's 5:3 frame, so switching
+     tabs doesn't make the page jump. Narrow wells size to their content. */
+  @container (min-width: 640px) {
+    .shots,
+    .flow {
+      aspect-ratio: 5 / 3;
+    }
+  }
+
+  .media-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    min-height: 34px;
+    padding-left: 14px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+    color: var(--muted-foreground);
+  }
+
+  .media-title {
+    display: flex;
+    gap: 8px;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .media-toggle {
+    align-self: stretch;
+    min-height: 34px;
+    padding: 0 14px;
+    border: 0;
+    border-left: 1px solid var(--border);
+    background: none;
+    color: var(--foreground);
+    font: inherit;
+  }
+
+  .media-toggle:hover {
+    background: var(--foreground);
+    color: var(--background);
+  }
+
+  /* ── Recording ── */
+  .media-video {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 5 / 3;
+    background: #171717;
+  }
+
+  /* ── Gallery ── */
+  .shots {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    align-content: center;
+    gap: 16px;
+    box-sizing: border-box;
+    margin: 0;
+    padding: clamp(12px, 2vw, 24px);
+    list-style: none;
+  }
+
+  .shot {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .shot-link {
+    display: block;
+    border: 1px solid var(--border);
+    cursor: zoom-in;
+    transition: border-color 0.15s ease;
+  }
+
+  .shot-link:hover {
+    border-color: var(--accent);
+  }
+
+  .shot-link :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 9 / 16;
+    object-fit: cover;
+  }
+
+  .shot-cap {
+    margin: 0;
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--muted-foreground);
+  }
+
+  /* ── Flow diagram: one row of steps; a column when the well is narrow ── */
+  .flow {
+    container-type: inline-size;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 20px;
+    min-height: 260px;
+    box-sizing: border-box;
+    padding: clamp(20px, 3vw, 40px) clamp(12px, 2vw, 28px);
+  }
+
+  .flow-steps {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .flow-step {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .flow-step:last-child {
+    flex-grow: 1;
+  }
+
+  .flow-box {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 12px 14px;
+    border: 1px solid var(--border-strong);
+    background: var(--surface);
+  }
+
+  .flow-label {
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  .flow-detail {
+    margin-top: 2px;
+    font-size: 13px;
+    line-height: 1.45;
+    color: var(--soft-foreground);
+  }
+
+  .flow-par {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin: 8px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .flow-par li {
+    padding: 0 8px;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .flow-arrow {
+    flex: none;
+    color: var(--accent);
+    font-size: 18px;
+  }
+
+  @container (max-width: 680px) {
+    .flow-steps,
+    .flow-step {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .flow-arrow {
+      align-self: flex-start;
+      margin-left: 14px;
+      transform: rotate(90deg);
+    }
+  }
+</style>
+
+<script>
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+  let observer: IntersectionObserver | null = null;
+
+  function setLabel(video: HTMLVideoElement) {
+    const toggle = video
+      .closest(".media")
+      ?.querySelector<HTMLButtonElement>("[data-video-toggle]");
+    if (!toggle) return;
+    toggle.hidden = false;
+    toggle.textContent = video.paused ? "play" : "pause";
+  }
+
+  function initVideos() {
+    observer?.disconnect();
+    const videos = document.querySelectorAll<HTMLVideoElement>(
+      "video[data-autoplay]"
+    );
+    if (!videos.length) return;
+
+    observer = new IntersectionObserver(
+      entries => {
+        for (const { target, isIntersecting } of entries) {
+          const video = target as HTMLVideoElement;
+          const wanted =
+            isIntersecting &&
+            !reduceMotion.matches &&
+            video.dataset.userPaused === undefined;
+          if (wanted) video.play().catch(() => setLabel(video));
+          else video.pause();
+        }
+      },
+      { threshold: 0.35 }
+    );
+
+    videos.forEach(video => {
+      video.addEventListener("play", () => setLabel(video));
+      video.addEventListener("pause", () => setLabel(video));
+      video
+        .closest(".media")
+        ?.querySelector("[data-video-toggle]")
+        ?.addEventListener("click", () => {
+          if (video.paused) {
+            delete video.dataset.userPaused;
+            video.play().catch(() => setLabel(video));
+          } else {
+            video.dataset.userPaused = "";
+            video.pause();
+          }
+        });
+      setLabel(video);
+      observer!.observe(video);
+    });
+  }
+
+  document.addEventListener("astro:page-load", initVideos);
+</script>

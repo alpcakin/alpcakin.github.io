@@ -1,0 +1,141 @@
+---
+/**
+ * vim-style status line, sticky at the bottom of the viewport. Preceded by
+ * the `~` lines vim draws past the end of a buffer.
+ *
+ * The scroll position (`Top` / `42%` / `Bot` / `All`) and the CRT toggle are
+ * driven by scripts/terminal.ts.
+ */
+import { SITE } from "@/config";
+
+type Props = {
+  /** Mode block on the left, e.g. NORMAL, READ, E404. */
+  mode?: string;
+  /** Contextual hint in the middle; hidden on small screens. */
+  hint?: string;
+};
+
+const { mode = "NORMAL", hint = "" } = Astro.props;
+
+const path = Astro.url.pathname.replace(/\/+$/, "");
+const year = new Date().getFullYear();
+---
+
+<div class="tildes" aria-hidden="true">
+  <span>~</span>
+  <span>~</span>
+  <span>~</span>
+</div>
+
+<footer class="status">
+  <span class="status-mode">{mode}</span>
+  <span class="status-path" data-status-path>~{path || "/"}</span>
+  <span class="status-hint">{hint}</span>
+  <span class="status-item status-wide">© {year} {SITE.author}</span>
+  <button
+    type="button"
+    class="status-item status-link"
+    data-crt-toggle
+    aria-pressed="false"
+    title="Toggle CRT scanlines"
+  >
+    crt
+  </button>
+  <span class="status-pos" data-scroll-pos aria-hidden="true">All</span>
+</footer>
+
+<style>
+  .tildes {
+    display: flex;
+    flex-direction: column;
+    padding: 0 var(--gutter) 6px;
+    color: var(--border-strong);
+    line-height: 1.5;
+  }
+
+  .status {
+    position: sticky;
+    bottom: 0;
+    z-index: 40;
+    display: flex;
+    align-items: stretch;
+    min-height: 28px;
+    background: var(--muted);
+    border-top: 1px solid var(--border);
+    font-size: 13px;
+    line-height: 28px;
+    white-space: nowrap;
+  }
+
+  .status-mode {
+    flex: none;
+    padding: 0 12px;
+    background: var(--accent);
+    color: var(--accent-foreground);
+    font-weight: 700;
+  }
+
+  .status-path {
+    flex: 0 1 auto;
+    min-width: 0;
+    padding: 0 12px;
+    border-right: 1px solid var(--border);
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .status-hint {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding: 0 12px;
+    color: var(--muted-foreground);
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .status-item {
+    flex: none;
+    padding: 0 10px;
+    border-left: 1px solid var(--border);
+    color: var(--muted-foreground);
+  }
+
+  .status-link {
+    background: none;
+    border-top: 0;
+    border-right: 0;
+    border-bottom: 0;
+    font: inherit;
+    line-height: inherit;
+    color: var(--foreground);
+  }
+
+  .status-link:hover {
+    background: var(--foreground);
+    color: var(--background);
+  }
+
+  .status-link[aria-pressed="true"] {
+    color: var(--accent);
+  }
+
+  .status-pos {
+    flex: none;
+    min-width: 4ch;
+    padding: 0 12px;
+    border-left: 1px solid var(--border);
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  @media (max-width: 900px) {
+    .status-hint,
+    .status-wide {
+      display: none;
+    }
+
+    .status-path {
+      flex: 1 1 auto;
+    }
+  }
+</style>

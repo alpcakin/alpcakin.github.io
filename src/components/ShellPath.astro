@@ -1,0 +1,84 @@
+---
+/**
+ * Breadcrumb rendered as a shell prompt:
+ *   alp@pécs:~/posts/japans-debt-crisis$ cat japans-debt-crisis.md
+ * Every directory in the path is a link; the last segment is the current page.
+ */
+type Segment = { label: string; href?: string };
+
+type Props = {
+  segments: Segment[];
+  /** Command shown after the prompt, e.g. `ls -lt`. */
+  cmd?: string;
+};
+
+const { segments, cmd } = Astro.props;
+---
+
+<nav class="shellpath" aria-label="Breadcrumb">
+  <ol class="shellpath-list">
+    <li class="shellpath-host" aria-hidden="true">alp@pécs:</li>
+    <li><a href="/" class="lk" aria-label="Home">~</a></li>
+    {
+      segments.map((segment, i) => (
+        <li>
+          <span class="dim" aria-hidden="true">
+            /
+          </span>
+          {segment.href && i < segments.length - 1 ? (
+            <a href={segment.href} class="lk">
+              {segment.label}
+            </a>
+          ) : (
+            <span aria-current="page">{segment.label}</span>
+          )}
+        </li>
+      ))
+    }
+    <li class="shellpath-sign" aria-hidden="true">$</li>
+  </ol>
+  {cmd && <span class="shellpath-cmd">{cmd}</span>}
+  <span class="cursor" aria-hidden="true"></span>
+</nav>
+
+<style>
+  .shellpath {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0 1ch;
+    font-size: 14px;
+    overflow-wrap: anywhere;
+  }
+
+  .shellpath-list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .shellpath-list > li {
+    display: flex;
+    align-items: baseline;
+  }
+
+  .shellpath-host {
+    color: var(--accent);
+  }
+
+  .shellpath-list a {
+    padding: 2px 0;
+  }
+
+  .shellpath-sign {
+    margin-left: 0.2ch;
+    color: var(--muted-foreground);
+  }
+
+  .shellpath-cmd {
+    color: var(--muted-foreground);
+  }
+</style>

@@ -1,11 +1,10 @@
 ---
 import { getCollection } from "astro:content";
 import type { GetStaticPathsOptions } from "astro";
-import Main from "@/layouts/Main.astro";
 import Layout from "@/layouts/Layout.astro";
-import Header from "@/components/Header.astro";
-import Footer from "@/components/Footer.astro";
-import Card from "@/components/Card.astro";
+import Pane from "@/components/tui/Pane.astro";
+import ShellPath from "@/components/ShellPath.astro";
+import PostList from "@/components/PostList.astro";
 import Pagination from "@/components/Pagination.astro";
 import getUniqueTags from "@/utils/getUniqueTags";
 import getPostsByTag from "@/utils/getPostsByTag";
@@ -26,25 +25,37 @@ export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
   });
 }
 
-const params = Astro.params;
-const { tag } = params;
+const { tag } = Astro.params;
 const { page, tagName } = Astro.props;
 ---
 
-<Layout title={`Tag: ${tagName} | ${SITE.title}`}>
-  <Header />
-  <Main
-    pageTitle={[`Tag:`, `${tagName}`]}
-    titleTransition={tag}
-    pageDesc={`All the articles with the tag "${tagName}".`}
-  >
-    <h1 slot="title" transition:name={tag}>{`Tag:${tag}`}</h1>
-    <ul>
-      {page.data.map(data => <Card {...data} />)}
-    </ul>
-  </Main>
+<Layout
+  title={`#${tagName} | ${SITE.title}`}
+  description={`Essays tagged "${tagName}" by ${SITE.author}.`}
+  hint={`${page.total} ${page.total === 1 ? "match" : "matches"} for #${tagName}`}
+>
+  <main id="main-content" class="shell list-shell">
+    <ShellPath
+      segments={[{ label: "tags", href: "/tags/" }, { label: tag }]}
+      cmd={`grep -l "#${tagName}"`}
+    />
 
-  <Pagination {page} />
-
-  <Footer noMarginTop={page.lastPage > 1} />
+    <Pane id="writing" index={3} title={`#${tagName}`} level={0} focused>
+      <header class="list-head">
+        <h1 class="list-title">
+          <span class="accent">#</span>{tagName}
+        </h1>
+        <p class="list-intro">
+          {page.total}
+          {page.total === 1 ? " essay" : " essays"} tagged “{tagName}”.
+        </p>
+      </header>
+      <PostList posts={page.data} variant="full" />
+      <Pagination page={page} />
+      <p class="list-more">
+        <a href="/tags/" class="lk lk--ul">← all tags</a>
+        <a href="/posts/" class="lk lk--ul">all posts</a>
+      </p>
+    </Pane>
+  </main>
 </Layout>

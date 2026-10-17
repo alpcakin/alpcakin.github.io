@@ -1,0 +1,125 @@
+---
+/**
+ * A tmux-style pane: a bordered box whose title sits on its top border.
+ *
+ * Panes with an `id` take part in focus tracking (scripts/terminal.ts): the pane
+ * that fills most of the viewport gets the accent border, and the matching
+ * window in the top bar is marked current.
+ */
+import type { HTMLAttributes } from "astro/types";
+
+interface Props extends Omit<HTMLAttributes<"section">, "title"> {
+  /** Text on the top border. */
+  title: string;
+  /** Window number shown before the title, e.g. `1` → "1 work". */
+  index?: number;
+  /** Start focused (accent border) before scripts run. */
+  focused?: boolean;
+  /** Element to render; use "article"/"aside"/"nav" where it fits better. */
+  as?: "section" | "article" | "aside" | "nav" | "div";
+  /** Heading level of the title; `0` renders a plain label (use when the
+   *  pane contains the page's h1, so the outline stays in order). */
+  level?: 0 | 1 | 2 | 3;
+}
+
+const {
+  title,
+  index,
+  focused = false,
+  as: Tag = "section",
+  level = 2,
+  id,
+  class: className,
+  ...attrs
+} = Astro.props;
+
+const Heading = (level === 0 ? "p" : `h${level}`) as "p" | "h1" | "h2" | "h3";
+const titleId = id ? `${id}-title` : undefined;
+---
+
+<Tag
+  id={id}
+  class:list={["pane", className]}
+  data-pane={id ? "" : undefined}
+  data-focused={focused ? "" : undefined}
+  aria-labelledby={titleId}
+  {...attrs}
+>
+  <Heading class="pane-title" id={titleId}>
+    {index !== undefined && <span class="pane-index">{index}</span>}
+    <slot name="title">{title}</slot>
+  </Heading>
+  <slot />
+</Tag>
+
+<style>
+  .pane {
+    position: relative;
+    min-width: 0;
+    box-sizing: border-box;
+    border: 1px solid var(--border);
+    padding: 32px var(--pane-pad-x) 28px;
+    scroll-margin-top: calc(var(--bar-height) + 24px);
+    transition: border-color 0.2s ease;
+  }
+
+  .pane[data-focused] {
+    border-color: var(--accent);
+  }
+
+  /* Set from the top bar (scripts/terminal.ts) so a click always shows where
+     it went, even when the page can't scroll to the pane. */
+  .pane[data-flash] {
+    animation: pane-flash 0.9s ease-out;
+  }
+
+  @keyframes pane-flash {
+    0%,
+    30% {
+      box-shadow:
+        0 0 0 1px var(--accent),
+        0 0 28px color-mix(in srgb, var(--accent) 30%, transparent);
+    }
+    100% {
+      box-shadow: 0 0 0 0 transparent;
+    }
+  }
+
+  .pane-title {
+    position: absolute;
+    top: -11px;
+    left: 14px;
+    max-width: calc(100% - 28px);
+    margin: 0;
+    padding: 0 8px;
+    box-sizing: border-box;
+    background: var(--background);
+    font-size: 13px;
+    line-height: 20px;
+    font-weight: 600;
+    color: var(--muted-foreground);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: color 0.2s ease;
+  }
+
+  .pane[data-focused] > .pane-title {
+    color: var(--accent);
+  }
+
+  .pane-index {
+    margin-right: 0.6em;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pane,
+    .pane-title {
+      transition: none;
+    }
+
+    .pane[data-flash] {
+      animation: none;
+    }
+  }
+</style>

@@ -1,0 +1,269 @@
+---
+/**
+ * The `work` pane: one tab per project, each with a preview well and a short
+ * description (beside the preview when the pane is wide).
+ *
+ * Tabs follow the WAI-ARIA tabs pattern (arrow keys / Home / End, roving
+ * tabindex). Selecting a tab updates the URL to `#work-<slug>`, and loading
+ * such a URL opens that project. Without JavaScript all projects are listed
+ * one after another.
+ */
+import Pane from "@/components/tui/Pane.astro";
+import ProjectMedia from "./ProjectMedia.astro";
+import type { Project } from "@/data/projects";
+
+type Props = {
+  projects: Project[];
+  index: number;
+  class?: string;
+};
+
+const { projects, index, class: className } = Astro.props;
+---
+
+<Pane id="work" index={index} title="work" class={className} data-work>
+  <div class="work-tabs" role="tablist" aria-label="Projects">
+    {
+      projects.map((project, i) => (
+        <button
+          type="button"
+          role="tab"
+          id={`tab-${project.slug}`}
+          class="work-tab"
+          aria-controls={`work-${project.slug}`}
+          aria-selected={i === 0 ? "true" : "false"}
+          tabindex={i === 0 ? 0 : -1}
+          data-tab={project.slug}
+        >
+          {project.short ?? project.title}
+        </button>
+      ))
+    }
+  </div>
+
+  <div class="work-body">
+    {
+      projects.map((project, i) => (
+        <div
+          role="tabpanel"
+          id={`work-${project.slug}`}
+          class="work-panel"
+          aria-labelledby={`tab-${project.slug}`}
+          data-panel={project.slug}
+          data-active={i === 0 ? "" : undefined}
+        >
+          {project.media && (
+            <ProjectMedia media={project.media} eager={i === 0} />
+          )}
+
+          <div class="work-detail">
+            <h3 class="work-title">
+              {project.title}
+              <span class="work-meta">{project.meta}</span>
+            </h3>
+            <p class="work-desc">{project.description}</p>
+            <p class="work-foot">
+              <span class="dim">{project.tags.join(" · ")}</span>
+              {project.links.length > 0 && (
+                <span class="work-links">
+                  {project.links.map(link => (
+                    <a
+                      href={link.href}
+                      class="lk lk--ul"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {link.label} <span aria-hidden="true">↗</span>
+                    </a>
+                  ))}
+                </span>
+              )}
+            </p>
+          </div>
+        </div>
+      ))
+    }
+  </div>
+</Pane>
+
+<noscript>
+  <style is:inline>
+    .work-tabs {
+      display: none !important;
+    }
+    .work-panel {
+      display: flex !important;
+    }
+    .work-panel + .work-panel {
+      border-top: 1px dashed var(--border-strong);
+      padding-top: 28px;
+      margin-top: 28px;
+    }
+  </style>
+</noscript>
+
+<style>
+  .work-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 20px;
+  }
+
+  .work-tab {
+    min-height: 36px;
+    padding: 0 14px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--soft-foreground);
+    font: inherit;
+    font-weight: 600;
+    white-space: nowrap;
+    transition:
+      background-color 0.12s ease,
+      border-color 0.12s ease,
+      color 0.12s ease;
+  }
+
+  .work-tab:hover {
+    border-color: var(--border-strong);
+    color: var(--foreground);
+  }
+
+  .work-tab[aria-selected="true"] {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: var(--accent-foreground);
+  }
+
+  .work-panel {
+    display: none;
+    flex-direction: column;
+    gap: 22px;
+  }
+
+  .work-panel[data-active] {
+    display: flex;
+  }
+
+  .work-detail {
+    max-width: 72ch;
+  }
+
+  /* Wide panes: preview on the left, description beside it. */
+  .work-body {
+    container-type: inline-size;
+  }
+
+  @container (min-width: 960px) {
+    .work-panel[data-active] {
+      display: grid;
+      grid-template-columns: minmax(0, 5fr) minmax(0, 3fr);
+      gap: 36px;
+      align-items: center;
+    }
+
+    .work-title {
+      flex-direction: column;
+      gap: 8px;
+    }
+  }
+
+  .work-title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 16px;
+    margin: 0;
+    font-size: 24px;
+    line-height: 1.2;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  .work-meta {
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: var(--muted-foreground);
+  }
+
+  .work-desc {
+    margin: 10px 0 0;
+  }
+
+  .work-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 8px 28px;
+    margin: 14px 0 0;
+    font-size: 14px;
+  }
+
+  .work-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 18px;
+  }
+</style>
+
+<script>
+  function initWork() {
+    document.querySelectorAll<HTMLElement>("[data-work]").forEach(root => {
+      const tabs = Array.from(
+        root.querySelectorAll<HTMLButtonElement>('[role="tab"]')
+      );
+      const panels = Array.from(
+        root.querySelectorAll<HTMLElement>('[role="tabpanel"]')
+      );
+      const tablist = root.querySelector<HTMLElement>('[role="tablist"]');
+      if (!tabs.length || !tablist) return;
+
+      const select = (slug: string, focus = false) => {
+        tabs.forEach(tab => {
+          const on = tab.dataset.tab === slug;
+          tab.setAttribute("aria-selected", String(on));
+          tab.tabIndex = on ? 0 : -1;
+          if (on && focus) tab.focus();
+        });
+        panels.forEach(panel =>
+          panel.toggleAttribute("data-active", panel.dataset.panel === slug)
+        );
+      };
+
+      tabs.forEach(tab =>
+        tab.addEventListener("click", () => {
+          const slug = tab.dataset.tab!;
+          select(slug);
+          history.replaceState(history.state, "", `#work-${slug}`);
+        })
+      );
+
+      tablist.addEventListener("keydown", event => {
+        const current = tabs.findIndex(
+          t => t.getAttribute("aria-selected") === "true"
+        );
+        const last = tabs.length - 1;
+        const next = {
+          ArrowRight: current === last ? 0 : current + 1,
+          ArrowLeft: current === 0 ? last : current - 1,
+          Home: 0,
+          End: last,
+        }[event.key];
+        if (next === undefined) return;
+        event.preventDefault();
+        select(tabs[next].dataset.tab!, true);
+      });
+
+      // Deep link: /#work-<slug>
+      const slug = location.hash.match(/^#work-(.+)$/)?.[1];
+      if (slug && tabs.some(t => t.dataset.tab === slug)) {
+        select(slug);
+        root.scrollIntoView({ block: "start" });
+      }
+    });
+  }
+
+  document.addEventListener("astro:page-load", initWork);
+</script>

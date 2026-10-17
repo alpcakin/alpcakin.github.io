@@ -10,6 +10,7 @@ import {
   transformerNotationWordHighlight,
 } from "@shikijs/transformers";
 import { transformerFileName } from "./src/utils/transformers/fileName";
+import { rehypeFigures } from "./src/utils/rehype/figures";
 import { SITE } from "./src/config";
 
 // https://astro.build/config
@@ -25,6 +26,7 @@ export default defineConfig({
   ],
   markdown: {
     remarkPlugins: [remarkToc, [remarkCollapse, { test: "Table of contents" }]],
+    rehypePlugins: [rehypeFigures],
     shikiConfig: {
       // For more themes, visit https://shiki.style/themes
       themes: { light: "min-light", dark: "github-dark-default" },
@@ -58,48 +60,17 @@ export default defineConfig({
     },
   },
 
+  // One typeface for the whole terminal UI. `latin-ext` is required for
+  // Turkish/Hungarian characters (ç, ğ, ı, ş, é, ő…).
   fonts: [
     {
-      name: "Space Grotesk",
-      cssVariable: "--font-sans",
-      fallbacks: ["sans-serif"],
+      name: "IBM Plex Mono",
+      cssVariable: "--font-mono",
+      fallbacks: ["ui-monospace", "SFMono-Regular", "Menlo", "monospace"],
       provider: fontProviders.google(),
       weights: [400, 500, 600, 700],
-      styles: ["normal"],
-    },
-    {
-      name: "Sriracha",
-      cssVariable: "--font-sriracha",
-      fallbacks: ["cursive"],
-      provider: fontProviders.local(),
-      options: {
-        variants: [
-          {
-            src: ["./src/assets/fonts/sriracha.woff2"],
-          },
-        ],
-      },
-    },
-    {
-      name: "Space Mono",
-      cssVariable: "--font-mono",
-      fallbacks: ["monospace"],
-      provider: fontProviders.google(),
-      weights: [400, 700],
-      styles: ["normal"],
-    },
-    {
-      name: "Cascadia Code",
-      cssVariable: "--font-cascadia-code",
-      fallbacks: ["monospace"],
-      provider: fontProviders.local(),
-      options: {
-        variants: [
-          {
-            src: ["./src/assets/fonts/cascadia-code.woff2"],
-          },
-        ],
-      },
+      styles: ["normal", "italic"],
+      subsets: ["latin", "latin-ext"],
     },
   ],
 });

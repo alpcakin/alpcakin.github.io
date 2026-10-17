@@ -1,85 +1,76 @@
-import type { Props } from "astro";
-import IconMail from "@/assets/icons/IconMail.svg";
-import IconGitHub from "@/assets/icons/IconGitHub.svg";
-import IconSubstack from "@/assets/icons/IconSubstack.svg";
-import IconLinkedin from "@/assets/icons/IconLinkedin.svg";
-import IconInstagram from "@/assets/icons/IconInstagram.svg";
-import IconBrandX from "@/assets/icons/IconBrandX.svg";
-import IconFacebook from "@/assets/icons/IconFacebook.svg";
-import IconTelegram from "@/assets/icons/IconTelegram.svg";
-import IconPinterest from "@/assets/icons/IconPinterest.svg";
-import IconWhatsapp from "@/assets/icons/IconWhatsapp.svg";
 import { SITE } from "@/config";
 
-interface Social {
+/**
+ * tmux-style windows shown in the top bar. Each one maps to a pane on the
+ * homepage (`id` = the pane's element id); on other pages the bar links to
+ * `href` instead. `match` marks the window as current on matching paths.
+ * Numbering starts at 1 (tmux `base-index 1`); the pane `index` props match.
+ */
+export interface TmuxWindow {
+  id: string;
+  label: string;
+  href: string;
+  match?: string[];
+}
+
+export const WINDOWS: TmuxWindow[] = [
+  { id: "about", label: "about", href: "/#about" },
+  { id: "work", label: "work", href: "/#work" },
+  {
+    id: "writing",
+    label: "writing",
+    href: "/posts/",
+    match: ["/posts", "/tags"],
+  },
+  { id: "contact", label: "contact", href: "/#contact" },
+];
+
+export interface Social {
   name: string;
+  handle: string;
   href: string;
   linkTitle: string;
-  icon: (_props: Props) => Element;
 }
 
 export const SOCIALS: Social[] = [
   {
-    name: "GitHub",
+    name: "github",
+    handle: "github.com/alpcakin",
     href: "https://github.com/alpcakin",
     linkTitle: `${SITE.author} on GitHub`,
-    icon: IconGitHub,
   },
   {
-    name: "Substack",
-    href: "https://substack.com/@alpcakin",
-    linkTitle: `${SITE.author} on Substack`,
-    icon: IconSubstack,
-  },
-  {
-    name: "LinkedIn",
+    name: "linkedin",
+    handle: "in/alp-cakin",
     href: "https://www.linkedin.com/in/alp-cakin",
     linkTitle: `${SITE.author} on LinkedIn`,
-    icon: IconLinkedin,
   },
   {
-    name: "Instagram",
+    name: "substack",
+    handle: "@alpcakin",
+    href: "https://substack.com/@alpcakin",
+    linkTitle: `${SITE.author} on Substack`,
+  },
+  {
+    name: "instagram",
+    handle: "@alp.cakin",
     href: "https://www.instagram.com/alp.cakin/",
     linkTitle: `${SITE.author} on Instagram`,
-    icon: IconInstagram,
   },
-] as const;
+];
 
-export const SHARE_LINKS: Social[] = [
+export const EMAIL = "alpcakin16@gmail.com";
+
+/** Share targets for posts; the post URL is appended to `href`. */
+export const SHARE_LINKS = [
   {
-    name: "WhatsApp",
-    href: "https://wa.me/?text=",
-    linkTitle: `Share this post via WhatsApp`,
-    icon: IconWhatsapp,
-  },
-  {
-    name: "Facebook",
-    href: "https://www.facebook.com/sharer.php?u=",
-    linkTitle: `Share this post on Facebook`,
-    icon: IconFacebook,
-  },
-  {
-    name: "X",
+    name: "x",
     href: "https://x.com/intent/post?url=",
-    linkTitle: `Share this post on X`,
-    icon: IconBrandX,
+    linkTitle: "Share this post on X",
   },
   {
-    name: "Telegram",
-    href: "https://t.me/share/url?url=",
-    linkTitle: `Share this post via Telegram`,
-    icon: IconTelegram,
-  },
-  {
-    name: "Pinterest",
-    href: "https://pinterest.com/pin/create/button/?url=",
-    linkTitle: `Share this post on Pinterest`,
-    icon: IconPinterest,
-  },
-  {
-    name: "Mail",
-    href: "mailto:?subject=See%20this%20post&body=",
-    linkTitle: `Share this post via email`,
-    icon: IconMail,
+    name: "linkedin",
+    href: "https://www.linkedin.com/sharing/share-offsite/?url=",
+    linkTitle: "Share this post on LinkedIn",
   },
 ] as const;

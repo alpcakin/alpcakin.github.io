@@ -1,0 +1,35 @@
+---
+/** A shell prompt line: `$ command`. The slot renders after the command. */
+import type { HTMLAttributes } from "astro/types";
+
+type Props = {
+  cmd: string;
+  /** Drop the bottom margin (when the prompt sits inline with other text). */
+  tight?: boolean;
+} & HTMLAttributes<"p">;
+
+const { cmd, tight = false, class: className, ...attrs } = Astro.props;
+---
+
+<p class:list={["prompt", { "prompt--tight": tight }, className]} {...attrs}>
+  <span class="prompt-sign" aria-hidden="true">$</span>
+  <span class="prompt-cmd">{cmd}</span>
+  <slot />
+</p>
+
+<style>
+  .prompt {
+    margin: 0 0 18px;
+    color: var(--muted-foreground);
+    overflow-wrap: anywhere;
+  }
+
+  .prompt--tight {
+    margin: 0;
+  }
+
+  .prompt-sign {
+    color: var(--accent);
+    margin-right: 0.6ch;
+  }
+</style>

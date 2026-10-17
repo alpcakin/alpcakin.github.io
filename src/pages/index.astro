@@ -1,1282 +1,346 @@
 ---
-import Layout from "@/layouts/Layout.astro";
-import Header from "@/components/Header.astro";
-import Footer from "@/components/Footer.astro";
-import { SITE } from "@/config";
-import { SOCIALS } from "@/constants";
 import { Image } from "astro:assets";
-import odeshHome from "@/assets/images/odesh/01-ana-sayfa.png";
-import odeshExpense from "@/assets/images/odesh/02-harcama.png";
-import odeshGroup from "@/assets/images/odesh/04-grup.png";
-import odeshLedger from "@/assets/images/odesh/05-defter.png";
+import { getCollection } from "astro:content";
+import Layout from "@/layouts/Layout.astro";
+import Pane from "@/components/tui/Pane.astro";
+import Prompt from "@/components/tui/Prompt.astro";
+import WorkPane from "@/components/work/WorkPane.astro";
+import PostList from "@/components/PostList.astro";
+import portrait from "@/assets/images/alp-cakin.jpeg";
+import { projects } from "@/data/projects";
+import { experience, role, status, tagline } from "@/data/profile";
+import { EMAIL, SOCIALS } from "@/constants";
+import getSortedPosts from "@/utils/getSortedPosts";
 
-const projects = [
-  {
-    title: "lore",
-    meta: "Open source · Rust CLI",
-    description:
-      "A command library that lives in your shell. Press ctrl+g, type a few words of what you're trying to do, and the finished command lands on your prompt — lore never runs anything itself.",
-    highlights: [
-      "Full-screen fuzzy picker (ratatui) backed by SQLite; frequently used and pinned commands rise to the top, and placeholders remember the arguments you typed last time.",
-      "Shell integration for zsh, bash, fish and PowerShell, installed by a single reversible profile line.",
-      "Optional sync of your library across machines through a private git repository you own — nothing is sent anywhere else.",
-      "Published to crates.io, Homebrew and Scoop, with checksum-verified installers, CI and a documentation site.",
-    ],
-    tags: ["Rust", "SQLite", "ratatui", "Git sync", "GitHub Actions"],
-    links: [
-      { label: "GitHub ↗", href: "https://github.com/alpcakin/lore" },
-      { label: "Docs ↗", href: "https://lore.alpcakin.com" },
-      { label: "crates.io ↗", href: "https://crates.io/crates/cmdlore" },
-    ],
-  },
-  {
-    title: "odesh",
-    meta: "Mobile app · Pre-release",
-    description:
-      "A mobile app for tracking informal debts and shared expenses between friends and groups — with automatic settlement suggestions, a payment flow and customisable reminders. It keeps the ledger; the money always moves through your own bank.",
-    highlights: [
-      "Designed the PostgreSQL schema and the settlement logic, including optional debt simplification that routes a group's balances through fewer payments.",
-      "Backend on Supabase: auth, row-level security, Postgres RPC functions, and edge functions for push notifications, reminders and account deletion — covered by a pgTAP database test suite.",
-      "Built the React Native (Expo) client; currently in end-to-end testing ahead of rollout to the first test users.",
-    ],
-    tags: ["Supabase", "PostgreSQL", "RLS", "Edge Functions", "React Native", "Expo"],
-    links: [{ label: "odesh.app ↗", href: "https://odesh.app" }],
-  },
-  {
-    title: "BayerPOS",
-    meta: "Co-founder · 2025 – 2026",
-    description:
-      "Point-of-sale and inventory software for tobacco and convenience shops in Turkey, built with a small team. Offline-first, so the till keeps working when the connection doesn't, and syncs when it comes back.",
-    highlights: [
-      "Owned the database layer on PostgreSQL / Supabase.",
-      "Built an AI invoice-OCR pipeline: supplier invoice lines are matched to the product catalogue through text-similarity search and an alias table, with an LLM making the final call, and stock is updated automatically.",
-      "Set up logging and observability, and contributed to the sync layer between offline and online data.",
-    ],
-    tags: ["PostgreSQL", "Supabase", "pgvector", "LLM / OCR", "SvelteKit", "Tauri"],
-    links: [],
-  },
-  {
-    title: "Financial Insights & Alert System",
-    meta: "Bachelor's thesis · 2026 – 2027",
-    description:
-      "A FastAPI backend that ingests financial news and market data, runs AI analysis on it and delivers personalised insights and alerts to a Flutter mobile client, based on each user's portfolio and followed topics.",
-    highlights: [
-      "Pluggable AI-provider layer: one prompt, one JSON schema and one validation routine shared by OpenAI, Gemini and Grok. Each article is analysed by every enabled model in parallel and the results are stored side by side, so the models can be compared.",
-      "Scheduled news, volatility and report jobs (APScheduler), Supabase/PostgreSQL storage, and push alerts through Firebase Cloud Messaging.",
-    ],
-    tags: ["Python", "FastAPI", "PostgreSQL", "OpenAI · Gemini · Grok", "FCM", "Flutter"],
-    links: [],
-  },
-];
-
-const experience = [
-  {
-    role: "Software Engineering Intern",
-    company: "Doğuş Teknoloji",
-    place: "Istanbul",
-    period: "Jul – Sep 2026",
-    points: [
-      "Maintained Dockerfiles and Kubernetes deployment manifests for enterprise backend services, hardening images and manifests based on scan results.",
-      "Triaged and remediated KICS (IaC misconfiguration) and Trivy (container vulnerability) findings across the security pipeline, working with the infrastructure team.",
-      "Evaluated alternatives to the existing Elastic APM and Grafana (Loki / Prometheus / Tempo) stacks — including SigNoz and OpenObserve — and presented a comparison and recommendation to the team.",
-      "Built a working observability demo: an OpenTelemetry Collector exporting logs, metrics and traces to ClickHouse and Elasticsearch.",
-    ],
-    tags: ["Docker", "Kubernetes", "KICS", "Trivy", "OpenTelemetry", "ClickHouse", "Elasticsearch"],
-  },
-];
-
-const stack = [
-  ".NET",
-  "FastAPI",
-  "PostgreSQL",
-  "Supabase",
-  "Docker",
-  "Kubernetes",
-  "OpenTelemetry",
-  "Claude Code",
-  "LLM APIs",
-  "React Native",
-];
-
-const odeshShots = [
-  { src: odeshHome, caption: "Home — who owes whom", alt: "odesh home screen showing what friends owe you and what you owe them" },
-  { src: odeshExpense, caption: "Adding an expense", alt: "odesh screen for entering a new expense amount" },
-  { src: odeshGroup, caption: "Group expenses", alt: "odesh group screen listing shared expenses and your share of each" },
-  { src: odeshLedger, caption: "Friends without the app", alt: "odesh ledger for a friend who does not use the app, with open debts and a settle-up button" },
-];
-
-const capabilities = [
-  {
-    group: "Languages & Backend",
-    items: ["C#", "Python", "TypeScript", "SQL", ".NET", "FastAPI", "REST API design"],
-  },
-  {
-    group: "Data",
-    items: [
-      "PostgreSQL",
-      "Supabase — RLS, RPC, edge functions",
-      "Oracle PL/SQL",
-      "Relational schema design",
-      "Text-similarity search & pgvector",
-      "SQLite",
-    ],
-  },
-  {
-    group: "DevOps & Observability",
-    items: [
-      "Docker",
-      "Kubernetes manifests",
-      "KICS & Trivy",
-      "OpenTelemetry Collector",
-      "ClickHouse & Elasticsearch",
-      "Grafana stack",
-      "Azure · GitHub Actions",
-    ],
-  },
-  {
-    group: "AI & Tooling",
-    items: [
-      "Claude Code",
-      "Claude API (Anthropic SDK)",
-      "Gemini & OpenAI APIs",
-      "LLM pipelines — OCR, matching, summaries",
-      "Embeddings",
-      "React Native · Flutter · SvelteKit",
-    ],
-  },
-];
+const allPosts = getSortedPosts(await getCollection("blog"));
+const latestPosts = allPosts.slice(0, 3);
+const profileLinks = SOCIALS.filter(s =>
+  ["github", "linkedin"].includes(s.name)
+);
 ---
 
 <Layout>
-  <Header />
-
-  <main id="main-content" class="relative">
-    <!-- ═══════════ HERO ═══════════ -->
-    <section id="hero" class="wide-section hero-section" data-reveal>
-      <p class="hero-eyebrow">Backend Developer &nbsp;—&nbsp; Pécs, Hungary</p>
-      <h1 class="hero-title">
-        Alp <em>Çakın</em><span class="hero-dot">.</span>
-      </h1>
-      <div class="hero-bottom-row">
-        <div class="hero-intro">
-          <p class="hero-subtitle">
-            I design APIs and databases, ship them in containers, and wire AI
-            into products people actually use.
-          </p>
-          <p class="hero-status">
-            <span class="hero-status-dot" aria-hidden="true"></span>
-            Final-year CS Engineering · graduating Jan 2027 · open to backend roles
-          </p>
-          <div class="hero-actions">
-            <a href="#work" class="pill-link pill-link--solid">See the work</a>
-            <a href="#contact" class="pill-link">Get in touch</a>
-          </div>
-        </div>
-        <p class="hero-scroll">
-          <span class="hero-scroll-line" aria-hidden="true"></span>
-          Scroll
+  <main id="main-content" class="shell">
+    <!-- Row 1: who -->
+    <div class="row">
+      <Pane id="whoami" title="whoami" level={0} class="who">
+        <Prompt cmd="whoami" />
+        <h1 class="name">
+          Alp Çakın<span class="cursor" aria-hidden="true"></span>
+        </h1>
+        <p class="role">{role}</p>
+        <p class="tagline">{tagline}</p>
+        <p class="status">
+          <span class="accent" aria-hidden="true">●</span>
+          {status}
         </p>
-      </div>
-    </section>
-
-    <!-- ═══════════ MARQUEE ═══════════ -->
-    <section class="marquee-section" data-reveal aria-label="Tech stack">
-      <div class="marquee-track">
-        {
-          [false, true].map(hidden => (
-            <span class="marquee-copy" aria-hidden={hidden ? "true" : undefined}>
-              {stack.map(item => (
-                <>
-                  {item}
-                  <span class="marquee-sep">&nbsp;&nbsp;/&nbsp;&nbsp;</span>
-                </>
-              ))}
-            </span>
-          ))
-        }
-      </div>
-    </section>
-
-    <!-- ═══════════ ABOUT ═══════════ -->
-    <section id="about" class="wide-section section">
-      <p class="section-label" data-reveal>About</p>
-      <div class="about-layout">
-        <img
-          src="/images/alp-cakin.jpeg"
-          alt={SITE.author}
-          class="about-photo"
-          data-reveal
-        />
-        <div class="about-copy" data-reveal>
-          <h2 class="about-heading">
-            Backend first, <em>product</em> always.
-          </h2>
-          <div class="about-prose">
-            <p>
-              I'm a final-year Computer Science Engineering student at the
-              University of Pécs, Hungary, graduating in January 2027. My focus
-              is backend engineering: API design, relational data modelling in
-              PostgreSQL, and everything it takes to get a service into
-              production — Dockerfiles, Kubernetes manifests, security scanning
-              and observability.
-            </p>
-            <p>
-              This summer I interned at <strong>Doğuş Teknoloji</strong> in
-              Istanbul, hardening container images and deployment manifests
-              against KICS and Trivy findings and building an OpenTelemetry
-              pipeline into ClickHouse and Elasticsearch. Outside of work I ship
-              my own products: <strong>odesh</strong>, a shared-expense app on
-              Supabase; <strong>lore</strong>, an open-source Rust CLI; and the
-              database and AI invoice-OCR pipeline behind <strong>BayerPOS</strong>.
-            </p>
-            <p>
-              I work AI-native. Claude Code is part of my daily workflow for
-              reading, refactoring and testing code, and I build with LLM APIs
-              — Claude, Gemini, OpenAI — inside real pipelines: document OCR,
-              catalogue matching, and multi-model news analysis where every
-              answer is validated against a schema before it is trusted.
-            </p>
-          </div>
-          <dl class="about-facts">
-            <div><dt>Based in</dt><dd>Pécs, Hungary</dd></div>
-            <div><dt>Education</dt><dd>B.Sc. CS Engineering, Univ. of Pécs</dd></div>
-            <div><dt>Languages</dt><dd>Turkish (native) · English (C1)</dd></div>
-          </dl>
-        </div>
-      </div>
-    </section>
-
-    <!-- ═══════════ EXPERIENCE ═══════════ -->
-    <section id="experience" class="wide-section section section--tight">
-      <p class="section-label" data-reveal>Experience</p>
-      <ul class="exp-list">
-        {
-          experience.map(job => (
-            <li class="exp-item" data-reveal>
-              <div class="exp-head">
-                <h3 class="exp-role">
-                  {job.role} <span class="exp-at">at</span> <em>{job.company}</em>
-                </h3>
-                <p class="exp-meta">{job.place} · {job.period}</p>
-              </div>
-              <ul class="exp-points">
-                {job.points.map(point => <li>{point}</li>)}
-              </ul>
-              <p class="work-tags">{job.tags.join("   ·   ")}</p>
-            </li>
-          ))
-        }
-      </ul>
-    </section>
-
-    <!-- ═══════════ WORK ═══════════ -->
-    <section id="work" class="wide-section section">
-      <div class="work-heading-row" data-reveal>
-        <p class="section-label">Selected Work</p>
-        <p class="work-hint">Hover or tap to expand</p>
-      </div>
-      <ul class="work-list">
-        {
-          projects.map((project, i) => (
-            <li class="work-item" data-work-item data-reveal>
-              <button
-                type="button"
-                class="work-row"
-                data-work-toggle
-                aria-expanded="false"
-              >
-                <span class="work-left">
-                  <span class="work-num">{String(i + 1).padStart(2, "0")}</span>
-                  <span class="work-title">{project.title}</span>
-                </span>
-                <span class="work-right">
-                  <span class="work-meta">{project.meta}</span>
-                  <span class="work-plus" aria-hidden="true">+</span>
-                </span>
-              </button>
-              <div class="work-panel">
-                <div class="work-panel-inner">
-                  <div class="work-panel-content">
-                    <p class="work-desc">{project.description}</p>
-                    <ul class="work-highlights">
-                      {project.highlights.map(point => <li>{point}</li>)}
-                    </ul>
-                    <p class="work-tags">{project.tags.join("   ·   ")}</p>
-                    {project.links.length > 0 && (
-                      <p class="work-links">
-                        {project.links.map(link => (
-                          <a
-                            href={link.href}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            class="work-link"
-                          >
-                            {link.label}
-                          </a>
-                        ))}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </li>
-          ))
-        }
-      </ul>
-    </section>
-
-    <!-- ═══════════ ODESH SHOWCASE ═══════════ -->
-    <section id="odesh" class="showcase-section" data-reveal>
-      <div class="wide-section showcase-inner">
-        <div class="showcase-copy">
-          <p class="section-label">In focus — odesh</p>
-          <h2 class="showcase-heading">Who owes whom, <em>at a glance</em>.</h2>
-          <p class="showcase-sub">
-            Friends, flatmates and trips on one ledger. Split an expense, see
-            net balances per person and per group, and settle up by bank
-            transfer — odesh never holds or moves money, it just keeps the
-            account straight.
-          </p>
-          <a href="https://odesh.app" target="_blank" rel="noopener noreferrer" class="pill-link">
-            Visit odesh.app ↗
-          </a>
-        </div>
-        <div class="showcase-shots">
+        <div class="actions">
+          <a href={`mailto:${EMAIL}`} class="btn btn--solid">mail me ⏎</a>
           {
-            odeshShots.map(shot => (
-              <figure class="showcase-shot">
-                <Image
-                  src={shot.src}
-                  alt={shot.alt}
-                  widths={[280, 440]}
-                  sizes="(max-width: 640px) 62vw, 220px"
-                  loading="lazy"
-                />
-                <figcaption>{shot.caption}</figcaption>
-              </figure>
+            profileLinks.map(social => (
+              <a
+                href={social.href}
+                class="lk lk--ul"
+                target="_blank"
+                rel="noopener noreferrer"
+                title={social.linkTitle}
+              >
+                {social.name} <span aria-hidden="true">↗</span>
+              </a>
             ))
           }
         </div>
-      </div>
-    </section>
+      </Pane>
 
-    <!-- ═══════════ CAPABILITIES ═══════════ -->
-    <section id="capabilities" class="wide-section section">
-      <p class="section-label" data-reveal>Capabilities</p>
-      <div class="cap-groups">
-        {
-          capabilities.map(({ group, items }) => (
-            <div data-reveal>
-              <p class="cap-group-label">{group}</p>
-              <div class="cap-list">
-                {items.map(item => <div class="cap-item">{item}</div>)}
-              </div>
-            </div>
-          ))
-        }
-      </div>
-    </section>
-
-    <!-- ═══════════ WRITING ═══════════ -->
-    <section id="writing" class="writing-section" data-reveal>
-      <div class="wide-section writing-inner">
-        <p class="section-label">Writing</p>
-        <h2 class="writing-heading">I also write about <em>markets</em>.</h2>
-        <p class="writing-sub">
-          Macroeconomics, financial crises, and market dynamics — essays that
-          dig into the data instead of repeating headlines.
-        </p>
-        <div class="writing-row">
-          <a href="/posts/" class="writing-cta">Read the essays →</a>
-          <span class="writing-topics">
-            Japan's debt crisis · Turkey stagflation · Iran–USA · Falling fertility
-          </span>
+      <Pane id="about" index={1} title="about" class="about-pane">
+        <div class="about">
+          <figure class="portrait">
+            <Image
+              src={portrait}
+              alt="Portrait of Alp Çakın"
+              widths={[120, 240]}
+              sizes="120px"
+              loading="lazy"
+            />
+          </figure>
+          <div class="about-copy">
+            <p>
+              Final-year Computer Science Engineering student at the University
+              of Pécs, graduating in January 2027. I'm curious, eager to learn
+              and always in the middle of learning something new — right now
+              that's systems programming in <strong>Rust</strong>, where I write
+              the core pieces myself.
+            </p>
+            <p>
+              An internship at <strong>Doğuş Teknoloji</strong> put me hands-on with
+              PostgreSQL, Docker, Kubernetes and OpenTelemetry. Day to day I work
+              in Rust, C#/.NET, Python, TypeScript and SQL, and I keep up regular
+              algorithm practice.
+            </p>
+          </div>
         </div>
-      </div>
-    </section>
+        <Prompt cmd="git log --graph --oneline" tight />
+        <ol class="log">
+          {
+            experience.map(entry => (
+              <li class="log-entry">
+                <span class="log-node" aria-hidden="true">
+                  *
+                </span>
+                <span class="log-org">
+                  {entry.href ? (
+                    <a
+                      href={entry.href}
+                      class="lk lk--ul"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {entry.org} <span aria-hidden="true">↗</span>
+                    </a>
+                  ) : (
+                    entry.org
+                  )}
+                </span>
+                <span class="log-role">{entry.role}</span>
+              </li>
+            ))
+          }
+        </ol>
+      </Pane>
+    </div>
 
-    <!-- ═══════════ CONTACT ═══════════ -->
-    <section id="contact" class="wide-section section contact-section" data-reveal>
-      <p class="section-label">Contact</p>
-      <a href="mailto:alpcakin16@gmail.com" class="contact-email">
-        alpcakin16@gmail.com
-      </a>
-      <div class="contact-links">
-        {
-          SOCIALS.map(social => (
-            <a href={social.href} target="_blank" rel="noopener noreferrer" class="contact-link">
-              {social.name}
-            </a>
-          ))
-        }
-      </div>
-    </section>
+    <!-- Row 2: work -->
+    <WorkPane projects={projects} index={2} />
+
+    <!-- Row 3: writing + contact -->
+    <div class="row">
+      <Pane id="writing" index={3} title="writing" class="fill">
+        <p class="soft writing-intro">
+          I also write about economics and technology.
+        </p>
+        <PostList posts={latestPosts} variant="compact" />
+        <p class="writing-more">
+          <a href="/posts/" class="lk lk--ul">all {allPosts.length} posts →</a>
+        </p>
+      </Pane>
+
+      <Pane id="contact" index={4} title="contact" class="side">
+        <Prompt cmd="mail" tight />
+        <p class="contact-mail">
+          <a href={`mailto:${EMAIL}`} class="lk">{EMAIL}</a>
+        </p>
+        <p class="dim contact-note">full-time roles · contract work</p>
+        <ul class="contact-links">
+          {
+            SOCIALS.map(social => (
+              <li>
+                <a
+                  href={social.href}
+                  class="lk lk--ul"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title={social.linkTitle}
+                >
+                  {social.name} <span aria-hidden="true">↗</span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </Pane>
+    </div>
   </main>
-
-  <Footer />
 </Layout>
 
 <style>
-  /* ─── Shared wide layout (this page uses a wider canvas than the blog) ─── */
-  .wide-section {
-    max-width: 1320px;
-    margin: 0 auto;
-    padding-inline: clamp(1.25rem, 5vw, 4.5rem);
+  /* ── Row 1: whoami + about side by side, stacked on small screens ── */
+  :global(.pane.who) {
+    flex: 1 1 420px;
+    display: flex;
+    flex-direction: column;
   }
 
-  /* ─── Hero ─── */
-  .hero-section {
-    padding-block: clamp(3.5rem, 9vw, 8rem) clamp(2.5rem, 6vw, 5rem);
+  :global(.pane.about-pane) {
+    flex: 1.5 1 560px;
   }
 
-  .hero-eyebrow {
-    font-family: var(--font-mono);
-    font-size: clamp(0.72rem, 1.1vw, 0.85rem);
-    letter-spacing: 0.24em;
-    text-transform: uppercase;
+  /* ── whoami ── */
+  .name {
+    margin: 14px 0 0;
+    font-size: clamp(40px, 4.2vw, 60px);
+    line-height: 1;
+    font-weight: 700;
+    letter-spacing: -0.035em;
+  }
+
+  .role {
+    margin: 14px 0 0;
     color: var(--accent);
-    margin: 0 0 clamp(1.5rem, 4vw, 2.75rem);
+    font-weight: 500;
   }
 
-  .hero-title {
-    margin: 0;
-    font-family: var(--font-serif);
-    font-weight: 400;
-    font-size: clamp(3.4rem, 14vw, 11rem);
-    line-height: 0.88;
-    letter-spacing: -0.025em;
-    color: var(--foreground);
+  .tagline {
+    margin: 18px 0 0;
+    max-width: 40ch;
+    font-size: 17px;
+    line-height: 1.6;
   }
 
-  .hero-title em {
-    font-style: italic;
+  .status {
+    display: flex;
+    gap: 10px;
+    margin: 20px 0 0;
+    color: var(--soft-foreground);
   }
 
-  .hero-dot {
-    color: var(--accent);
-  }
-
-  .hero-bottom-row {
+  /* Pinned to the bottom when the row is taller than whoami. */
+  .actions {
     display: flex;
     flex-wrap: wrap;
-    align-items: flex-end;
-    justify-content: space-between;
-    gap: 2rem;
-    margin-top: clamp(2.25rem, 5vw, 3.75rem);
-  }
-
-  .hero-subtitle {
-    margin: 0;
-    max-width: 32ch;
-    font-size: clamp(1.15rem, 2vw, 1.65rem);
-    line-height: 1.45;
-    color: var(--muted-foreground);
-  }
-
-  .hero-scroll {
-    margin: 0;
-    display: flex;
     align-items: center;
-    gap: 0.7rem;
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--muted-foreground);
+    gap: 12px 20px;
+    margin-top: auto;
+    padding-top: 26px;
   }
 
-  .hero-scroll-line {
-    display: inline-block;
-    width: 2.5rem;
-    height: 1px;
-    background: var(--muted-foreground);
-  }
-
-  /* ─── Marquee ─── */
-  .marquee-section {
-    position: relative;
-    border-block: 1px solid var(--border);
-    background: var(--muted);
-    overflow: hidden;
-    padding-block: clamp(0.85rem, 1.9vw, 1.5rem);
-  }
-
-  .marquee-track {
-    display: inline-flex;
-    white-space: nowrap;
-    will-change: transform;
-    animation: marq 30s linear infinite;
-  }
-
-  .marquee-track:hover {
-    animation-play-state: paused;
-  }
-
-  .marquee-copy {
-    font-family: var(--font-serif);
-    font-size: clamp(1.55rem, 4.6vw, 3.2rem);
-    color: var(--foreground);
-  }
-
-  .marquee-sep {
-    color: var(--accent);
-  }
-
-  @keyframes marq {
-    from { transform: translateX(0); }
-    to { transform: translateX(-50%); }
-  }
-
-  /* ─── Sections (shared) ─── */
-  .section {
-    padding-block: clamp(4rem, 9vw, 8rem);
-  }
-
-  .section-label {
-    font-family: var(--font-mono);
-    font-size: 0.74rem;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin: 0 0 clamp(2rem, 4vw, 3rem);
-  }
-
-  /* ─── About ─── */
-  .about-layout {
+  /* ── about ── */
+  .about {
     display: flex;
     flex-wrap: wrap;
-    gap: clamp(2.25rem, 6vw, 4.5rem);
+    gap: 20px 24px;
     align-items: flex-start;
-  }
-
-  .about-photo {
-    width: clamp(150px, 22vw, 240px);
-    aspect-ratio: 4 / 5;
-    object-fit: cover;
-    border-radius: 5px;
-    border: 1px solid var(--border);
-    flex-shrink: 0;
+    margin-bottom: 24px;
   }
 
   .about-copy {
-    flex: 1;
-    min-width: min(100%, 320px);
-    max-width: 56ch;
+    flex: 1 1 260px;
+    min-width: 0;
+    max-width: 68ch;
   }
 
-  .about-heading {
-    margin: 0 0 clamp(1.75rem, 3.5vw, 2.5rem);
-    font-family: var(--font-serif);
-    font-weight: 400;
-    font-size: clamp(2rem, 5.5vw, 4rem);
-    line-height: 1.04;
-    letter-spacing: -0.01em;
-    color: var(--foreground);
+  .about-copy p {
+    margin: 0 0 14px;
   }
 
-  .about-heading em {
-    font-style: italic;
-    color: var(--accent);
+  .about-copy p:last-child {
+    margin-bottom: 0;
   }
 
-  .about-prose {
-    display: flex;
-    flex-direction: column;
-    gap: 1.35rem;
-    font-size: clamp(1.02rem, 1.5vw, 1.22rem);
-    line-height: 1.65;
-    color: var(--muted-foreground);
-  }
-
-  .about-prose p {
-    margin: 0;
-  }
-
-  .about-prose strong {
-    color: var(--foreground);
+  .about-copy strong {
+    color: var(--foreground-strong);
     font-weight: 600;
   }
 
-  .about-prose a {
-    color: var(--accent);
-  }
-
-  /* ─── Work ─── */
-  .work-heading-row {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 1.5rem;
-    flex-wrap: wrap;
-  }
-
-  .work-heading-row .section-label {
+  /* Phosphor duotone; true colours on hover. */
+  .portrait {
+    position: relative;
+    flex: 0 0 112px;
     margin: 0;
-  }
-
-  .work-hint {
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--muted-foreground);
-    margin: 0;
-  }
-
-  .work-list {
-    list-style: none;
-    margin: clamp(1.75rem, 3.5vw, 2.75rem) 0 0;
-    padding: 0;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .work-item {
-    border-top: 1px solid var(--border);
-  }
-
-  .work-row {
-    all: unset;
-    box-sizing: border-box;
-    display: flex;
-    width: 100%;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 1.25rem;
-    padding-block: clamp(1.15rem, 2.5vw, 1.9rem);
-    cursor: pointer;
-  }
-
-  .work-left {
-    display: flex;
-    align-items: baseline;
-    gap: clamp(0.9rem, 2vw, 2rem);
-    min-width: 0;
-  }
-
-  .work-num {
-    font-family: var(--font-mono);
-    font-size: 0.8rem;
-    color: var(--accent);
-    flex-shrink: 0;
-  }
-
-  .work-title {
-    margin: 0;
-    font-family: var(--font-serif);
-    font-weight: 400;
-    font-size: clamp(1.7rem, 4.6vw, 3rem);
-    line-height: 1.05;
-    letter-spacing: -0.01em;
-    color: var(--foreground);
-    transition: color 0.3s ease;
-  }
-
-  .work-item.is-open .work-title {
-    color: var(--accent);
-  }
-
-  .work-right {
-    display: flex;
-    align-items: center;
-    gap: clamp(0.8rem, 1.8vw, 1.5rem);
-    flex-shrink: 0;
-  }
-
-  .work-meta {
-    font-family: var(--font-mono);
-    font-size: 0.68rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--muted-foreground);
-    white-space: nowrap;
-  }
-
-  .work-plus {
-    font-family: var(--font-app);
-    font-size: 1.5rem;
-    line-height: 1;
-    color: var(--foreground);
-    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s;
-  }
-
-  .work-item.is-open .work-plus {
-    transform: rotate(45deg);
-    color: var(--accent);
-  }
-
-  .work-panel {
-    display: grid;
-    grid-template-rows: 0fr;
-    transition: grid-template-rows 0.55s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  .work-item.is-open .work-panel {
-    grid-template-rows: 1fr;
-  }
-
-  .work-panel-inner {
     overflow: hidden;
+    border: 1px solid var(--border-strong);
+    background: var(--accent);
   }
 
-  .work-panel-content {
-    display: flex;
-    flex-direction: column;
-    gap: 1.1rem;
-    padding-bottom: clamp(1.5rem, 3.2vw, 2.5rem);
-    max-width: 62ch;
-  }
-
-  .work-desc {
-    margin: 0;
-    font-size: clamp(1rem, 1.5vw, 1.22rem);
-    line-height: 1.6;
-    color: var(--muted-foreground);
-  }
-
-  .work-tags {
-    margin: 0;
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    letter-spacing: 0.05em;
-    color: var(--foreground);
-  }
-
-  .work-link {
-    font-family: var(--font-mono);
-    font-size: 0.8rem;
-    letter-spacing: 0.04em;
-    color: var(--accent);
-  }
-
-  /* ─── Capabilities ─── */
-  .cap-groups {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
-    gap: clamp(2.5rem, 6vw, 5rem);
-  }
-
-  .cap-group-label {
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--muted-foreground);
-    margin: 0 0 1.25rem;
-  }
-
-  .cap-list {
-    border-top: 1px solid var(--border);
-  }
-
-  .cap-item {
-    border-bottom: 1px solid var(--border);
-    padding-block: 0.55rem;
-    font-family: var(--font-serif);
-    font-size: clamp(1.15rem, 1.8vw, 1.5rem);
-    color: var(--foreground);
-    transition: color 0.25s, padding-left 0.25s;
-  }
-
-  .cap-item:hover {
-    color: var(--accent);
-    padding-left: 0.6rem;
-  }
-
-  /* ─── Writing ─── */
-  .writing-section {
-    border-block: 1px solid var(--border);
-    background: var(--muted);
-  }
-
-  .writing-inner {
-    padding-block: clamp(4.5rem, 10vw, 8.5rem);
-  }
-
-  .writing-heading {
-    margin: 0;
-    font-family: var(--font-serif);
-    font-weight: 400;
-    font-size: clamp(2.4rem, 7vw, 5.5rem);
-    line-height: 1.02;
-    letter-spacing: -0.015em;
-    color: var(--foreground);
-    max-width: 16ch;
-  }
-
-  .writing-heading em {
-    font-style: italic;
-    color: var(--accent);
-  }
-
-  .writing-sub {
-    margin: clamp(1.5rem, 3vw, 2.25rem) 0 0;
-    max-width: 46ch;
-    font-size: clamp(1.05rem, 1.5vw, 1.3rem);
-    line-height: 1.6;
-    color: var(--muted-foreground);
-  }
-
-  .writing-row {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 1.5rem 2rem;
-    margin-top: clamp(2rem, 4vw, 3rem);
-  }
-
-  .writing-cta {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.6rem;
-    font-family: var(--font-mono);
-    font-size: 0.82rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--foreground);
-    border: 1px solid var(--foreground);
-    border-radius: 999px;
-    padding: 0.7rem 1.4rem;
-    transition: background 0.25s, color 0.25s;
-  }
-
-  .writing-cta:hover {
-    background: var(--foreground);
-    color: var(--background);
-  }
-
-  .writing-topics {
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.04em;
-    color: var(--muted-foreground);
-  }
-
-  /* ─── Contact ─── */
-  .contact-email {
+  .portrait :global(img) {
     display: block;
-    font-family: var(--font-serif);
-    font-size: clamp(2.1rem, 8vw, 5rem);
-    line-height: 1.04;
-    letter-spacing: -0.02em;
-    color: var(--foreground);
-    word-break: break-word;
-    transition: color 0.25s;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    transform: scale(1.5);
+    transform-origin: 43% 52%;
+    filter: grayscale(1) contrast(1.15) brightness(0.95);
+    mix-blend-mode: multiply;
+    transition: filter 0.3s ease;
   }
 
-  .contact-email:hover {
+  .portrait::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 2px,
+      rgb(0 0 0 / 0.18) 3px
+    );
+    transition: opacity 0.3s ease;
+  }
+
+  .portrait:hover :global(img) {
+    filter: none;
+    mix-blend-mode: normal;
+  }
+
+  .portrait:hover::after {
+    opacity: 0;
+  }
+
+  .log {
+    display: grid;
+    gap: 10px;
+    margin: 12px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .log-entry {
+    display: grid;
+    grid-template-columns: 2ch minmax(0, 1fr);
+    line-height: 1.5;
+  }
+
+  .log-node {
+    grid-row: span 2;
     color: var(--accent);
+  }
+
+  .log-org {
+    font-weight: 600;
+  }
+
+  .log-role {
+    color: var(--muted-foreground);
+    font-size: 14px;
+  }
+
+  /* ── writing ── */
+  .writing-intro {
+    margin: 0 0 12px;
+  }
+
+  .writing-more {
+    margin: 14px 0 0;
+  }
+
+  /* ── contact ── */
+  .contact-mail {
+    margin: 10px 0 0;
+    font-size: clamp(18px, 1.6vw, 22px);
+    line-height: 1.3;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+  }
+
+  .contact-note {
+    margin: 6px 0 0;
+    font-size: 14px;
   }
 
   .contact-links {
     display: flex;
     flex-wrap: wrap;
-    gap: 1.25rem 2.25rem;
-    margin-top: clamp(2rem, 4vw, 3rem);
-    font-family: var(--font-mono);
-    font-size: 0.82rem;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-  }
-
-  .contact-link {
-    color: var(--foreground);
-    transition: color 0.15s ease;
-  }
-
-  .contact-link:hover {
-    color: var(--accent);
-  }
-
-  /* ─── Hero extras ─── */
-  .hero-intro {
-    display: flex;
-    flex-direction: column;
-    gap: clamp(1.1rem, 2.2vw, 1.5rem);
-  }
-
-  .hero-status {
-    margin: 0;
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--foreground);
-  }
-
-  .hero-status-dot {
-    width: 0.5rem;
-    height: 0.5rem;
-    border-radius: 999px;
-    background: var(--accent);
-    box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 18%, transparent);
-    flex-shrink: 0;
-  }
-
-  .hero-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-  }
-
-  .pill-link {
-    display: inline-flex;
-    align-items: center;
-    align-self: flex-start;
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--foreground);
-    border: 1px solid var(--foreground);
-    border-radius: 999px;
-    padding: 0.65rem 1.3rem;
-    transition: background 0.25s, color 0.25s, border-color 0.25s;
-  }
-
-  .pill-link:hover {
-    background: var(--foreground);
-    color: var(--background);
-  }
-
-  .pill-link--solid {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: var(--background);
-  }
-
-  .pill-link--solid:hover {
-    background: var(--foreground);
-    border-color: var(--foreground);
-  }
-
-  /* ─── About facts ─── */
-  .about-facts {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-    gap: 1rem 2rem;
-    margin: clamp(2rem, 4vw, 2.75rem) 0 0;
-    padding-top: 1.25rem;
-    border-top: 1px solid var(--border);
-  }
-
-  .about-facts dt {
-    font-family: var(--font-mono);
-    font-size: 0.68rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--muted-foreground);
-  }
-
-  .about-facts dd {
-    margin: 0.3rem 0 0;
-    font-size: 0.98rem;
-    color: var(--foreground);
-  }
-
-  /* ─── Experience ─── */
-  .section--tight {
-    padding-top: 0;
-  }
-
-  .exp-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    border-top: 1px solid var(--border);
-  }
-
-  .exp-item {
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-    padding-block: clamp(1.5rem, 3vw, 2.25rem);
-    border-bottom: 1px solid var(--border);
-  }
-
-  .exp-head {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 0.5rem 1.5rem;
-  }
-
-  .exp-role {
-    margin: 0;
-    font-family: var(--font-serif);
-    font-weight: 400;
-    font-size: clamp(1.6rem, 3.6vw, 2.5rem);
-    line-height: 1.1;
-    color: var(--foreground);
-  }
-
-  .exp-role em {
-    font-style: italic;
-    color: var(--accent);
-  }
-
-  .exp-at {
-    color: var(--muted-foreground);
-  }
-
-  .exp-meta {
-    margin: 0;
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--muted-foreground);
-  }
-
-  .exp-points,
-  .work-highlights {
-    margin: 0;
+    gap: 6px 18px;
+    margin: 20px 0 0;
     padding: 0;
     list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 0.7rem;
-    max-width: 72ch;
-    font-size: clamp(0.98rem, 1.35vw, 1.1rem);
-    line-height: 1.6;
-    color: var(--muted-foreground);
-  }
-
-  .exp-points li,
-  .work-highlights li {
-    position: relative;
-    padding-left: 1.4rem;
-  }
-
-  .exp-points li::before,
-  .work-highlights li::before {
-    content: "—";
-    position: absolute;
-    left: 0;
-    color: var(--accent);
-  }
-
-  /* ─── Work extras ─── */
-  .work-links {
-    margin: 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem 1.5rem;
-  }
-
-  /* ─── odesh showcase ─── */
-  .showcase-section {
-    border-block: 1px solid var(--border);
-    background: var(--muted);
-    overflow: hidden;
-  }
-
-  .showcase-inner {
-    display: grid;
-    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
-    align-items: center;
-    gap: clamp(2.5rem, 5vw, 4.5rem);
-    padding-block: clamp(4rem, 9vw, 7rem);
-  }
-
-  .showcase-copy {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .showcase-heading {
-    margin: 0;
-    font-family: var(--font-serif);
-    font-weight: 400;
-    font-size: clamp(2.2rem, 5vw, 3.9rem);
-    line-height: 1.04;
-    letter-spacing: -0.015em;
-    color: var(--foreground);
-  }
-
-  .showcase-heading em {
-    font-style: italic;
-    color: var(--accent);
-  }
-
-  .showcase-sub {
-    margin: clamp(1.25rem, 2.5vw, 1.75rem) 0 clamp(1.5rem, 3vw, 2rem);
-    max-width: 44ch;
-    font-size: clamp(1rem, 1.4vw, 1.15rem);
-    line-height: 1.65;
-    color: var(--muted-foreground);
-  }
-
-  .showcase-shots {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: clamp(0.75rem, 1.5vw, 1.25rem);
-  }
-
-  .showcase-shot {
-    margin: 0;
-  }
-
-  .showcase-shot:nth-child(even) {
-    transform: translateY(2.5rem);
-  }
-
-  .showcase-shot img {
-    display: block;
-    width: 100%;
-    height: auto;
-    aspect-ratio: 9 / 16;
-    object-fit: cover;
-    border-radius: 12px;
-    border: 1px solid var(--border);
-    box-shadow: 0 18px 40px -22px color-mix(in srgb, var(--foreground) 45%, transparent);
-  }
-
-  .showcase-shot figcaption {
-    margin-top: 0.7rem;
-    font-family: var(--font-mono);
-    font-size: 0.66rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--muted-foreground);
-  }
-
-  @media (max-width: 900px) {
-    .showcase-inner {
-      grid-template-columns: minmax(0, 1fr);
-    }
-  }
-
-  @media (max-width: 640px) {
-    .showcase-shots {
-      display: flex;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      margin-inline: calc(-1 * clamp(1.25rem, 5vw, 4.5rem));
-      padding-inline: clamp(1.25rem, 5vw, 4.5rem);
-      padding-bottom: 0.5rem;
-    }
-
-    .showcase-shot {
-      flex: 0 0 58%;
-      scroll-snap-align: start;
-    }
-
-    .showcase-shot:nth-child(even) {
-      transform: none;
-    }
-  }
-
-  /* ─── Scroll reveal ─── */
-  [data-reveal] {
-    opacity: 0;
-    transform: translateY(32px);
-    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  [data-reveal].is-visible {
-    opacity: 1;
-    transform: translateY(0);
   }
 
   @media (prefers-reduced-motion: reduce) {
-    [data-reveal] {
-      opacity: 1;
-      transform: none;
+    .portrait :global(img),
+    .portrait::after {
       transition: none;
-    }
-    .marquee-track {
-      animation: none !important;
     }
   }
 </style>
-
-<script>
-  let revealCleanup: AbortController | null = null;
-  let workCleanup: AbortController | null = null;
-
-  function setupScrollReveal() {
-    if (revealCleanup) revealCleanup.abort();
-    revealCleanup = new AbortController();
-    const { signal } = revealCleanup;
-
-    const targets = document.querySelectorAll<HTMLElement>("[data-reveal]");
-    if (!targets.length) return;
-
-    const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
-
-    if (prefersReducedMotion) {
-      targets.forEach(el => el.classList.add("is-visible"));
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      entries => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("is-visible");
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.1, rootMargin: "0px 0px -60px 0px" }
-    );
-
-    targets.forEach(el => observer.observe(el));
-    signal.addEventListener("abort", () => observer.disconnect());
-  }
-
-  function setupWorkAccordion() {
-    if (workCleanup) workCleanup.abort();
-    workCleanup = new AbortController();
-    const { signal } = workCleanup;
-
-    const items = Array.from(
-      document.querySelectorAll<HTMLLIElement>("[data-work-item]")
-    );
-    if (!items.length) return;
-
-    const hoverCapable = window.matchMedia("(pointer: fine)").matches;
-
-    const setOpen = (target: HTMLLIElement | null) => {
-      items.forEach(item => {
-        const isOpen = item === target;
-        item.classList.toggle("is-open", isOpen);
-        item
-          .querySelector("[data-work-toggle]")
-          ?.setAttribute("aria-expanded", String(isOpen));
-      });
-    };
-
-    items.forEach(item => {
-      const toggle = item.querySelector<HTMLButtonElement>("[data-work-toggle]");
-      if (!toggle) return;
-
-      toggle.addEventListener(
-        "click",
-        () => {
-          const alreadyOpen = item.classList.contains("is-open");
-          setOpen(alreadyOpen ? null : item);
-        },
-        { signal }
-      );
-
-      if (hoverCapable) {
-        item.addEventListener("mouseenter", () => setOpen(item), { signal });
-      }
-    });
-  }
-
-  setupScrollReveal();
-  setupWorkAccordion();
-
-  document.addEventListener("astro:page-load", () => {
-    setupScrollReveal();
-    setupWorkAccordion();
-  });
-</script>

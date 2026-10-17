@@ -1,0 +1,95 @@
+---
+/**
+ * Site-wide image viewer. Any `a[data-zoom]` wrapping an image opens its
+ * `href` here instead of navigating (wired up in scripts/terminal.ts); without
+ * JavaScript the link simply opens the image file.
+ */
+---
+
+<dialog class="lightbox" data-lightbox aria-labelledby="lightbox-caption">
+  <div class="lightbox-bar">
+    <span id="lightbox-caption" class="lightbox-caption" data-lightbox-caption
+    ></span>
+    <button
+      type="button"
+      class="lightbox-close"
+      data-lightbox-close
+      aria-label="Close image viewer"
+    >
+      [esc] close
+    </button>
+  </div>
+  <div class="lightbox-well">
+    <img data-lightbox-img alt="" />
+  </div>
+</dialog>
+
+<style>
+  .lightbox {
+    width: min(1400px, calc(100vw - 2 * var(--gutter)));
+    max-width: none;
+    max-height: calc(100svh - 2 * var(--gutter));
+    margin: auto;
+    padding: 0;
+    border: 1px solid var(--accent);
+    background: var(--background);
+    color: var(--foreground);
+  }
+
+  .lightbox::backdrop {
+    background: rgb(4 6 5 / 0.86);
+  }
+
+  .lightbox-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 0 0 0 14px;
+    border-bottom: 1px solid var(--border);
+    font-size: 13px;
+  }
+
+  .lightbox-caption {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--soft-foreground);
+  }
+
+  .lightbox-close {
+    flex: none;
+    min-height: 40px;
+    padding: 0 14px;
+    border: 0;
+    border-left: 1px solid var(--border);
+    background: none;
+    color: var(--foreground);
+    font: inherit;
+  }
+
+  .lightbox-close:hover {
+    background: var(--foreground);
+    color: var(--background);
+  }
+
+  .lightbox-well {
+    display: flex;
+    justify-content: center;
+    background: var(--surface-sunken);
+  }
+
+  .lightbox-well img {
+    display: block;
+    max-width: 100%;
+    max-height: calc(100svh - 2 * var(--gutter) - 44px);
+    width: auto;
+    height: auto;
+    object-fit: contain;
+  }
+
+  :global(html:has(.lightbox[open])) {
+    overflow: hidden;
+  }
+</style>

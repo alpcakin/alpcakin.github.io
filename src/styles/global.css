@@ -1,20 +1,53 @@
 @import "tailwindcss";
 @import "./typography.css";
 
+/*
+ * Terminal design system — tokens.
+ *
+ * Every component reads these custom properties; change the look here, not in
+ * components. The palette is a phosphor-green-on-black terminal: one accent,
+ * three text tones, three surface tones and two line weights.
+ */
 :root {
-  --background: #F4F1E9;
-  --foreground: #16130E;
-  --accent: #2233E6;
-  --muted: #EBE6D9;
-  --border: #DDD6C7;
-  --muted-foreground: #57524A;
+  color-scheme: dark;
+
+  /* Surfaces */
+  --background: #0a0e0b; /* terminal ground */
+  --surface: #0d130f; /* raised boxes inside a pane */
+  --surface-sunken: #070a08; /* media wells, code */
+  --muted: #121a14; /* status bar, inline code */
+  --hover: #15201a; /* row hover */
+
+  /* Lines */
+  --border: #26352a;
+  --border-strong: #3a4d3f;
+
+  /* Text */
+  --foreground: #d2e3d5;
+  --foreground-strong: #ecf6ee; /* bold text in prose */
+  --soft-foreground: #b9ccbc; /* tags, secondary copy */
+  --muted-foreground: #7f9684; /* meta, prompts — 6:1 on --background */
+
+  /* Signal */
+  --accent: #7ee787;
+  --accent-foreground: #0a0e0b; /* text set on --accent */
+  --danger: #ff9b8f; /* shell errors */
+
+  /* Type: everything is mono; long-form prose reads --font-prose so it can be
+     switched to a proportional face in one place if ever wanted. */
+  --font-prose: var(--font-mono);
+
+  /* Layout */
+  --shell-max: 1600px;
+  --gutter: clamp(8px, 1.6vw, 24px);
+  --gap: 22px;
+  --pane-pad-x: clamp(16px, 2vw, 28px);
+  --bar-height: 44px;
 }
 
+/* `--font-mono` itself is defined by Astro's <Font> component (unlayered, so
+   it overrides Tailwind's default in the theme layer). */
 @theme inline {
-  --font-app: var(--font-sans);
-  --font-serif: 'Instrument Serif', Georgia, 'Times New Roman', serif;
-  --font-sriracha: var(--font-sriracha);
-  --font-mono: var(--font-mono);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-accent: var(--accent);
@@ -22,53 +55,241 @@
   --color-border: var(--border);
 }
 
-.italic,
-.prose em,
-em,
-i {
-  font-family: inherit;
-  font-style: italic;
-}
-
-.spicy {
-  font-family: var(--font-sriracha);
-}
-
 @layer base {
   * {
-    @apply border-border outline-accent/75;
+    border-color: var(--border);
     scrollbar-width: thin;
-    scrollbar-color: var(--color-border) transparent;
+    scrollbar-color: var(--border-strong) transparent;
   }
+
   html {
-    @apply overflow-y-scroll scroll-smooth;
+    overflow-y: scroll;
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
   }
+
   body {
-    @apply flex min-h-svh flex-col bg-background font-app text-foreground selection:bg-accent/20 selection:text-foreground;
+    display: flex;
+    flex-direction: column;
+    min-height: 100svh;
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-mono);
+    font-size: 15px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
-  a,
-  button {
-    @apply outline-offset-1 outline-accent focus-visible:no-underline focus-visible:outline-2 focus-visible:outline-dashed;
+
+  ::selection {
+    background: var(--foreground);
+    color: var(--background);
   }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--foreground);
+    outline-offset: 2px;
+  }
+
   button:not(:disabled),
   [role="button"]:not(:disabled) {
     cursor: pointer;
   }
+
+  :target {
+    scroll-margin-block: calc(var(--bar-height) + 24px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
 }
 
-@utility max-w-app {
-  @apply max-w-3xl xl:max-w-4xl;
+/* ─── Shell: the page body between the tmux bar and the status line ─── */
+.shell {
+  width: 100%;
+  max-width: var(--shell-max);
+  margin-inline: auto;
+  padding: calc(var(--gap) + 4px) var(--gutter) var(--gap);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--gap) + 4px);
+  flex: 1 0 auto;
 }
 
-@utility app-layout {
-  @apply mx-auto w-full max-w-app px-5 sm:px-6;
+/* A row of panes that wraps on narrow screens. Children set their own flex. */
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: calc(var(--gap) + 4px) var(--gap);
+  align-items: stretch;
 }
 
-.active-nav {
-  @apply text-accent;
+/* Flex sizing for row children (global so they work on component roots). */
+.fill {
+  flex: 999 1 640px;
+  min-width: 0;
 }
 
-:target {
-  scroll-margin-block: 5rem;
+.side {
+  flex: 1 1 360px;
+  min-width: 0;
 }
 
+/* ─── Listing pages (archive, tag pages, tag index): one pane, one column ─── */
+.list-shell {
+  max-width: 980px;
+}
+
+.list-head {
+  margin-bottom: 20px;
+}
+
+.list-title {
+  margin: 0;
+  font-size: clamp(32px, 4vw, 48px);
+  line-height: 1.1;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  overflow-wrap: anywhere;
+}
+
+.list-intro {
+  margin: 12px 0 0;
+  max-width: 62ch;
+  color: var(--soft-foreground);
+}
+
+.list-more {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  margin: 24px 0 0;
+  font-size: 14px;
+}
+
+/* ─── Text tones ─── */
+.dim {
+  color: var(--muted-foreground);
+}
+
+.soft {
+  color: var(--soft-foreground);
+}
+
+.accent {
+  color: var(--accent);
+}
+
+/* ─── Links: inverse video on hover, like a selected terminal cell ─── */
+.lk {
+  color: var(--foreground);
+  text-decoration: none;
+  transition:
+    background-color 0.12s ease,
+    color 0.12s ease;
+}
+
+.lk:hover {
+  background: var(--foreground);
+  color: var(--background);
+}
+
+.lk--ul {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+  text-decoration-color: var(--border-strong);
+}
+
+.lk--ul:hover {
+  text-decoration-color: transparent;
+}
+
+/* ─── Buttons (links styled as keys) ─── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  min-height: 44px;
+  padding: 0 16px;
+  box-sizing: border-box;
+  border: 1px solid var(--border-strong);
+  color: var(--foreground);
+  background: transparent;
+  font: inherit;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background-color 0.12s ease,
+    color 0.12s ease,
+    border-color 0.12s ease;
+}
+
+.btn:hover {
+  background: var(--foreground);
+  border-color: var(--foreground);
+  color: var(--background);
+}
+
+.btn--solid {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-foreground);
+  font-weight: 700;
+}
+
+.btn--solid:hover {
+  background: var(--foreground);
+  border-color: var(--foreground);
+}
+
+/* ─── Blinking block cursor ─── */
+.cursor {
+  display: inline-block;
+  width: 0.55em;
+  height: 0.95em;
+  margin-left: 0.06em;
+  vertical-align: -0.1em;
+  background: var(--accent);
+  animation: cursor-blink 1.1s steps(1) infinite;
+}
+
+@keyframes cursor-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor {
+    animation: none;
+  }
+}
+
+/* ─── Optional CRT scanlines (toggled from the status line, off by default) ─── */
+html[data-crt] body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 2px,
+    rgb(0 0 0 / 0.22) 3px
+  );
+}
+
+html[data-crt] body {
+  text-shadow: 0 0 6px color-mix(in srgb, var(--accent) 22%, transparent);
+}

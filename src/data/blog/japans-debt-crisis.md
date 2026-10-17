@@ -26,9 +26,7 @@ Economists traditionally worried at 60-90% debt-to-GDP. At 100%, your debt equal
 
 High debt creates three problems: it consumes revenue through interest payments, limits crisis response flexibility, and can undermine currency confidence.
 
-**Chart 1 shows Japan’s trajectory:** start
-
-ing at a manageable 63% in 1990, crossing 100% by the late 1990s, and hitting 240% by 2023. A near-quadrupling in 33 years with no meaningful reversals.
+**Chart 1 shows Japan’s trajectory:** starting at a manageable 63% in 1990, crossing 100% by the late 1990s, and hitting 240% by 2023. A near-quadrupling in 33 years with no meaningful reversals.
 
 ![Japan Debt to GDP Ratio](/images/japan_debt_to_gdp.png)
 

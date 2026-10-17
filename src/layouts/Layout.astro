@@ -3,6 +3,9 @@ import { Font } from "astro:assets";
 import { ClientRouter } from "astro:transitions";
 import { PUBLIC_GOOGLE_SITE_VERIFICATION } from "astro:env/client";
 import { SITE } from "@/config";
+import Header from "@/components/Header.astro";
+import StatusBar from "@/components/StatusBar.astro";
+import Lightbox from "@/components/Lightbox.astro";
 import "@/styles/global.css";
 
 type Props = {
@@ -15,6 +18,10 @@ type Props = {
   pubDatetime?: Date;
   modDatetime?: Date | null;
   scrollSmooth?: boolean;
+  /** Status line mode block (see StatusBar.astro). */
+  mode?: string;
+  /** Status line hint. */
+  hint?: string;
 };
 
 const {
@@ -27,6 +34,8 @@ const {
   pubDatetime,
   modDatetime,
   scrollSmooth = false,
+  mode,
+  hint,
 } = Astro.props;
 
 const socialImageURL = new URL(ogImage, Astro.url);
@@ -55,33 +64,21 @@ const structuredData = pubDatetime
   dir={SITE.dir}
   lang={`${SITE.lang ?? "en"}`}
   class={`${scrollSmooth ? "scroll-smooth" : ""}`}
-  data-theme="dark"
   translate="no"
 >
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="theme-color" content="#F4F1E9" />
+    <meta name="theme-color" content="#0a0e0b" />
     <link rel="canonical" href={canonicalURL} />
     <meta name="generator" content={Astro.generator} />
 
-    <!-- Load Fonts -->
-    <!-- Only preload the primary body font. Others load async to avoid bandwidth contention. -->
-    <Font
-      cssVariable="--font-sans"
-      preload={[{ subset: "latin", weight: 400, style: "normal" }]}
-    />
-    <Font cssVariable="--font-sriracha" />
+    <!-- Single UI typeface (see astro.config.ts `fonts`) -->
     <Font
       cssVariable="--font-mono"
       preload={[{ subset: "latin", weight: 400, style: "normal" }]}
     />
-    <Font cssVariable="--font-cascadia-code" />
-    <!-- Editorial display serif -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
 
     <!-- Disable auto-translation -->
     <meta name="google" content="notranslate" />
@@ -146,7 +143,6 @@ const structuredData = pubDatetime
       href={new URL("rss.xml", Astro.site)}
     />
 
-
     {
       // If PUBLIC_GOOGLE_SITE_VERIFICATION is set in the environment variable,
       // include google-site-verification tag in the heading
@@ -160,117 +156,32 @@ const structuredData = pubDatetime
     }
 
     <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-5PD9JS29M5" is:inline></script>
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-5PD9JS29M5"
+      is:inline></script>
     <script is:inline>
       window.dataLayer = window.dataLayer || [];
-      function gtag() { dataLayer.push(arguments); }
-      gtag('js', new Date());
-      gtag('config', 'G-5PD9JS29M5');
-      document.addEventListener('astro:page-load', () => {
-        gtag('event', 'page_view', { page_path: window.location.pathname });
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+      gtag("config", "G-5PD9JS29M5");
+      document.addEventListener("astro:page-load", () => {
+        gtag("event", "page_view", { page_path: window.location.pathname });
       });
     </script>
 
     <ClientRouter />
   </head>
   <body>
-    <!-- Subtle warm backdrop -->
-    <div class="site-backdrop pointer-events-none" aria-hidden="true" transition:persist>
-      <div class="site-cursor-glow"></div>
-    </div>
-
+    <Header />
     <slot />
+    <StatusBar mode={mode} hint={hint} />
+    <Lightbox />
   </body>
 </html>
 
-<style>
-  .site-backdrop {
-    position: fixed;
-    inset: 0;
-    overflow: hidden;
-    z-index: 0;
-    pointer-events: none;
-  }
-
-  .site-cursor-glow {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 800px;
-    height: 800px;
-    margin-left: -400px;
-    margin-top: -400px;
-    transform: translate(var(--site-cx, 50vw), var(--site-cy, 50vh)) translateZ(0);
-    background: radial-gradient(
-      circle,
-      color-mix(in oklab, var(--accent) 20%, transparent) 0%,
-      color-mix(in oklab, var(--accent) 8%, transparent) 40%,
-      transparent 70%
-    );
-    mix-blend-mode: multiply;
-    opacity: 0;
-    transition: opacity 0.5s ease;
-    pointer-events: none;
-  }
-
-  @media (pointer: fine) {
-    .site-cursor-glow {
-      will-change: transform;
-    }
-  }
-
-  .site-cursor-glow.active {
-    opacity: 1;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .site-cursor-glow {
-      transition: none;
-    }
-  }
-</style>
-
 <script>
-  let cursorCleanup: AbortController | null = null;
-
-  document.addEventListener("astro:page-load", () => {
-    // Cleanup previous listeners
-    if (cursorCleanup) cursorCleanup.abort();
-    cursorCleanup = new AbortController();
-    const { signal } = cursorCleanup;
-
-    // Skip cursor glow on touch-only devices (no pointer cursor)
-    if (window.matchMedia("(pointer: coarse)").matches) return;
-
-    const cursorGlow = document.querySelector<HTMLElement>(".site-cursor-glow");
-    let ticking = false;
-
-    if (cursorGlow) {
-      document.addEventListener(
-        "mousemove",
-        (e: MouseEvent) => {
-          if (!ticking) {
-            window.requestAnimationFrame(() => {
-              cursorGlow.style.setProperty("--site-cx", `${e.clientX}px`);
-              cursorGlow.style.setProperty("--site-cy", `${e.clientY}px`);
-              if (!cursorGlow.classList.contains("active")) {
-                cursorGlow.classList.add("active");
-              }
-              ticking = false;
-            });
-            ticking = true;
-          }
-        },
-        { signal }
-      );
-
-      document.addEventListener(
-        "mouseleave",
-        () => {
-          cursorGlow.classList.remove("active");
-        },
-        { signal }
-      );
-    }
-  });
+  import "@/scripts/terminal";
 </script>

@@ -1,6 +1,6 @@
 # alpcakin.com: Economy Blog → Developer Portfolio (with Blog as a Section)
 
-> Status: implemented (2026-07-20). Companion doc: [`portfolio-redesign-qa.md`](./portfolio-redesign-qa.md) has the full requirements interview this plan was built from. See `CLAUDE.md` → "Issues encountered" for what changed after this plan was written (light-theme repaint, site search removal).
+> Status: implemented (2026-07-20); visual layer rebuilt as a dark terminal UI on 2026-10-16. Companion doc: [`portfolio-redesign-qa.md`](./portfolio-redesign-qa.md) has the full requirements interview this plan was built from. See `CLAUDE.md` → "Design system" and "Issues encountered" for what changed after this plan was written (light-theme repaint, site search removal, terminal redesign). Content/structure decisions below still hold; every visual-direction bullet is superseded.
 
 ## Context
 

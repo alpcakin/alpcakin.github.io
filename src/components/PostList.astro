@@ -1,0 +1,113 @@
+---
+/**
+ * Posts as a dated listing. `compact` (homepage) shows date + title;
+ * `full` (archive, tag pages) adds reading time and the description.
+ */
+import type { CollectionEntry } from "astro:content";
+import { getPath } from "@/utils/getPath";
+import { postDates, readingMinutes } from "@/utils/postMeta";
+
+type Props = {
+  posts: CollectionEntry<"blog">[];
+  variant?: "compact" | "full";
+};
+
+const { posts, variant = "full" } = Astro.props;
+
+const rows = posts.map(post => ({
+  href: getPath(post.id, post.filePath),
+  title: post.data.title,
+  description: post.data.description,
+  minutes: readingMinutes(post),
+  ...postDates(post),
+}));
+---
+
+<ul class:list={["posts", `posts--${variant}`]}>
+  {
+    rows.map(row => (
+      <li class="post">
+        <a href={row.href} class="post-link">
+          <span class="post-meta">
+            <time class="post-date" datetime={row.publishedISO}>
+              {row.published}
+            </time>
+            {variant === "full" && <span> · {row.minutes} min</span>}
+          </span>
+          <span class="post-title">{row.title}</span>
+          {variant === "full" && (
+            <span class="post-desc">{row.description}</span>
+          )}
+        </a>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .posts {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .post-link {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0 20px;
+    min-height: 44px;
+    padding: 10px 8px;
+    box-sizing: border-box;
+    color: var(--foreground);
+    transition:
+      background-color 0.12s ease,
+      color 0.12s ease;
+  }
+
+  .post-link:hover {
+    background: var(--hover);
+  }
+
+  .post-link:hover .post-title {
+    color: var(--accent);
+  }
+
+  .post-meta {
+    flex: none;
+    color: var(--muted-foreground);
+    font-size: 13px;
+  }
+
+  .post-date {
+    color: var(--accent);
+  }
+
+  .post-title {
+    flex: 1 1 300px;
+    min-width: 0;
+  }
+
+  /* full variant: each entry is a block — meta, title, description */
+  .posts--full .post-link {
+    flex-direction: column;
+    gap: 4px;
+    padding: 18px 8px;
+  }
+
+  .posts--full .post + .post {
+    border-top: 1px solid var(--border);
+  }
+
+  .posts--full .post-title {
+    flex: none;
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  .post-desc {
+    max-width: 72ch;
+    color: var(--soft-foreground);
+  }
+</style>
