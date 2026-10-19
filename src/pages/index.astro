@@ -6,6 +6,7 @@ import Pane from "@/components/tui/Pane.astro";
 import Prompt from "@/components/tui/Prompt.astro";
 import WorkPane from "@/components/work/WorkPane.astro";
 import PostList from "@/components/PostList.astro";
+import BootIntro from "@/components/BootIntro.astro";
 import portrait from "@/assets/images/alp-cakin.jpeg";
 import { projects } from "@/data/projects";
 import { experience, role, status, tagline } from "@/data/profile";
@@ -23,18 +24,18 @@ const profileLinks = SOCIALS.filter(s =>
   <main id="main-content" class="shell">
     <!-- Row 1: who -->
     <div class="row">
-      <Pane id="whoami" title="whoami" level={0} class="who">
+      <Pane id="whoami" title="whoami" level={0} class="who" data-boot-root>
         <Prompt cmd="whoami" />
-        <h1 class="name">
+        <h1 class="name" data-boot="decode">
           Alp Çakın<span class="cursor" aria-hidden="true"></span>
         </h1>
-        <p class="role">{role}</p>
-        <p class="tagline">{tagline}</p>
-        <p class="status">
+        <p class="role" data-boot="type">{role}</p>
+        <p class="tagline" data-boot="human">{tagline}</p>
+        <p class="status" data-boot="print">
           <span class="accent" aria-hidden="true">●</span>
           {status}
         </p>
-        <div class="actions">
+        <div class="actions" data-boot="print">
           <a href={`mailto:${EMAIL}`} class="btn btn--solid">mail me ⏎</a>
           {
             profileLinks.map(social => (
@@ -52,9 +53,15 @@ const profileLinks = SOCIALS.filter(s =>
         </div>
       </Pane>
 
-      <Pane id="about" index={1} title="about" class="about-pane">
+      <Pane
+        id="about"
+        index={1}
+        title="about"
+        class="about-pane"
+        data-boot-root
+      >
         <div class="about">
-          <figure class="portrait">
+          <figure class="portrait" data-boot="scan">
             <Image
               src={portrait}
               alt="Portrait of Alp Çakın"
@@ -63,7 +70,7 @@ const profileLinks = SOCIALS.filter(s =>
               loading="lazy"
             />
           </figure>
-          <div class="about-copy">
+          <div class="about-copy" data-boot="print">
             <p>
               Final-year Computer Science Engineering student at the University
               of Pécs, graduating in January 2027. I'm curious, eager to learn
@@ -80,7 +87,7 @@ const profileLinks = SOCIALS.filter(s =>
           </div>
         </div>
         <Prompt cmd="git log --graph --oneline" tight />
-        <ol class="log">
+        <ol class="log" data-boot="lines">
           {
             experience.map(entry => (
               <li class="log-entry">
@@ -114,23 +121,25 @@ const profileLinks = SOCIALS.filter(s =>
 
     <!-- Row 3: writing + contact -->
     <div class="row">
-      <Pane id="writing" index={3} title="writing" class="fill">
-        <p class="soft writing-intro">
+      <Pane id="writing" index={3} title="writing" class="fill" data-boot-root>
+        <p class="soft writing-intro" data-boot="type">
           I also write about economics and technology.
         </p>
         <PostList posts={latestPosts} variant="compact" />
-        <p class="writing-more">
+        <p class="writing-more" data-boot="print">
           <a href="/posts/" class="lk lk--ul">all {allPosts.length} posts →</a>
         </p>
       </Pane>
 
-      <Pane id="contact" index={4} title="contact" class="side">
+      <Pane id="contact" index={4} title="contact" class="side" data-boot-root>
         <Prompt cmd="mail" tight />
-        <p class="contact-mail">
+        <p class="contact-mail" data-boot="decode">
           <a href={`mailto:${EMAIL}`} class="lk">{EMAIL}</a>
         </p>
-        <p class="dim contact-note">full-time roles · contract work</p>
-        <ul class="contact-links">
+        <p class="dim contact-note" data-boot="type">
+          full-time roles · contract work
+        </p>
+        <ul class="contact-links" data-boot="lines">
           {
             SOCIALS.map(social => (
               <li>
@@ -150,6 +159,7 @@ const profileLinks = SOCIALS.filter(s =>
       </Pane>
     </div>
   </main>
+  <BootIntro />
 </Layout>
 
 <style>

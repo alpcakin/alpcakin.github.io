@@ -8,7 +8,9 @@
 export const ODESH_APP_STORE =
   "https://apps.apple.com/tr/app/odesh/id6802964428";
 
-export const role = "software engineer · Pécs, Hungary";
+export const jobTitle = "software engineer";
+export const place = "Pécs, Hungary";
+export const role = `${jobTitle} · ${place}`;
 
 export const tagline =
   "I build software end to end — from backend services to mobile apps and command-line tools.";

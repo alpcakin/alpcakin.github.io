@@ -74,6 +74,37 @@ const structuredData = pubDatetime
     <link rel="canonical" href={canonicalURL} />
     <meta name="generator" content={Astro.generator} />
 
+    <!-- Boot sequence gate (scripts/boot.ts): runs before first paint so the
+         parts that will be typed out never flash in. Keep in sync with gate(). -->
+    <script is:inline>
+      (() => {
+        if (window.__bootGate) return;
+        window.__bootGate = true;
+        const root = document.documentElement;
+        try {
+          if (
+            matchMedia("(prefers-reduced-motion: reduce)").matches ||
+            navigator.webdriver
+          )
+            return;
+          const home = location.pathname === "/";
+          if (
+            home &&
+            (location.hash || sessionStorage.getItem("terminal:booted"))
+          )
+            return;
+          root.setAttribute("data-booting", home ? "home" : "page");
+          // If the script never starts (slow or failed load), show everything.
+          setTimeout(() => {
+            if (!root.hasAttribute("data-boot-started"))
+              root.removeAttribute("data-booting");
+          }, 3000);
+        } catch {
+          root.removeAttribute("data-booting");
+        }
+      })();
+    </script>
+
     <!-- Single UI typeface (see astro.config.ts `fonts`) -->
     <Font
       cssVariable="--font-mono"
@@ -184,4 +215,5 @@ const structuredData = pubDatetime
 
 <script>
   import "@/scripts/terminal";
+  import "@/scripts/boot";
 </script>

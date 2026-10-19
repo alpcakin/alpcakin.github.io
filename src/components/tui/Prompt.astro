@@ -1,5 +1,8 @@
 ---
-/** A shell prompt line: `$ command`. The slot renders after the command. */
+/**
+ * A shell prompt line: `$ command`. The slot renders after the command.
+ * Inside a `[data-boot-root]` the command is typed out on first view.
+ */
 import type { HTMLAttributes } from "astro/types";
 
 type Props = {
@@ -11,7 +14,11 @@ type Props = {
 const { cmd, tight = false, class: className, ...attrs } = Astro.props;
 ---
 
-<p class:list={["prompt", { "prompt--tight": tight }, className]} {...attrs}>
+<p
+  class:list={["prompt", { "prompt--tight": tight }, className]}
+  data-boot="cmd"
+  {...attrs}
+>
   <span class="prompt-sign" aria-hidden="true">$</span>
   <span class="prompt-cmd">{cmd}</span>
   <slot />

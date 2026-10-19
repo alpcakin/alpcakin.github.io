@@ -13,19 +13,12 @@ import { ODESH_APP_STORE } from "@/data/profile";
  * preview well renders:
  *   - "video":   a looping screen recording (put files under public/media/<slug>/)
  *   - "gallery": a row of screenshots (import them from src/assets so Astro optimises them)
- *   - "flow":    a pipeline diagram drawn from `steps`, for work without screenshots
+ * Without media the tab shows the description only.
  */
 
 export interface ProjectLink {
   label: string;
   href: string;
-}
-
-export interface FlowStep {
-  label: string;
-  detail?: string;
-  /** Things that happen side by side within this step. */
-  parallel?: string[];
 }
 
 export interface GalleryShot {
@@ -48,7 +41,6 @@ export type ProjectMedia = {
       label: string;
     }
   | { type: "gallery"; shots: GalleryShot[] }
-  | { type: "flow"; steps: FlowStep[] }
 );
 
 export interface Project {
@@ -139,19 +131,6 @@ export const projects: Project[] = [
       "Offline-first POS and inventory software for retail shops in Turkey. I owned the database layer and an AI-assisted invoice OCR pipeline that updates stock automatically.",
     tags: ["PostgreSQL", "Supabase", "SvelteKit", "Tauri"],
     links: [],
-    media: {
-      type: "flow",
-      title: "bayerpos/invoice-ocr",
-      steps: [
-        { label: "Supplier invoice", detail: "OCR into line items" },
-        {
-          label: "Candidate match",
-          parallel: ["text similarity", "alias table"],
-        },
-        { label: "LLM", detail: "makes the final call" },
-        { label: "Stock update", detail: "applied automatically" },
-      ],
-    },
   },
   {
     slug: "fin-insights",
@@ -162,18 +141,5 @@ export const projects: Project[] = [
       "A FastAPI backend that ingests real-time market data and sends AI insights and alerts to a Flutter app. I built the AI analysis pipeline, from LLM API integration to system prompt design.",
     tags: ["FastAPI", "Supabase", "Flutter"],
     links: [],
-    media: {
-      type: "flow",
-      title: "fin-insights/architecture",
-      steps: [
-        { label: "Ingest", detail: "real-time market data" },
-        {
-          label: "Analyse",
-          parallel: ["OpenAI", "Gemini", "Grok"],
-        },
-        { label: "Validate", detail: "one JSON schema" },
-        { label: "Alert", detail: "push to the app" },
-      ],
-    },
   },
 ];

@@ -169,6 +169,12 @@ const windows = WINDOWS.map((window, i) => ({
     content: "*";
   }
 
+  /* `#` = activity: the pane is being written to (scripts/boot.ts). */
+  .tmux-window[data-activity]:not([aria-current]) .tmux-flag::before {
+    content: "#";
+    color: var(--accent);
+  }
+
   .tmux-host {
     flex: none;
     display: flex;

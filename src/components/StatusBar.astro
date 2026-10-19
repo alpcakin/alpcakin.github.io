@@ -28,9 +28,9 @@ const year = new Date().getFullYear();
 </div>
 
 <footer class="status">
-  <span class="status-mode">{mode}</span>
+  <span class="status-mode" data-status-mode>{mode}</span>
   <span class="status-path" data-status-path>~{path || "/"}</span>
-  <span class="status-hint">{hint}</span>
+  <span class="status-hint" data-status-hint>{hint}</span>
   <span class="status-item status-wide">© {year} {SITE.author}</span>
   <button
     type="button"

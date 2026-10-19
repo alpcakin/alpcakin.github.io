@@ -1,0 +1,173 @@
+---
+/**
+ * Title screen of the homepage boot sequence (scripts/boot.ts): a black screen
+ * where the cursor blinks, the name is typed, then a mission-intro caption
+ * (day and Pécs time, title, place) types itself in the bottom-left corner
+ * before the screen collapses and the page writes itself.
+ *
+ * Shown only while `html[data-booting="home"]` (set before first paint), so
+ * the first frame is already black. Purely decorative: hidden from assistive
+ * tech, which reads the page underneath.
+ */
+import { SITE } from "@/config";
+import { jobTitle, place } from "@/data/profile";
+---
+
+<div class="intro" data-intro aria-hidden="true">
+  <p class="intro-name">
+    <span data-intro-typed></span><span class="intro-cursor" data-intro-cursor
+    ></span><span class="intro-ghost" data-intro-ghost>{SITE.author}</span>
+  </p>
+
+  <div class="mission">
+    <p class="mission-line mission-time" data-line hidden data-mission-time>
+      Day 1
+    </p>
+    <p class="mission-line" data-line hidden>{jobTitle}</p>
+    <p class="mission-line mission-place" data-line hidden>
+      {place} · 46.07°N 18.23°E
+    </p>
+  </div>
+
+  <p class="intro-skip">
+    <span class="intro-skip-key">press any key to skip</span>
+    <span class="intro-skip-tap">tap to skip</span>
+  </p>
+</div>
+
+<style>
+  .intro {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 70;
+    align-items: center;
+    justify-content: center;
+    padding: 0 var(--gutter);
+    background: #000;
+  }
+
+  :global(html[data-booting="home"]) .intro:not([hidden]) {
+    display: flex;
+  }
+
+  .intro-name {
+    margin: 0 0 6vh;
+    font-size: clamp(40px, 8vw, 104px);
+    line-height: 1;
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    color: var(--foreground-strong);
+    white-space: nowrap;
+    text-shadow: 0 0 24px color-mix(in srgb, var(--accent) 30%, transparent);
+  }
+
+  /* Blinks while idle, solid while typing — like a real terminal. */
+  .intro-cursor {
+    display: inline-block;
+    width: 0.55em;
+    height: 0.82em;
+    margin: 0 0.04em;
+    vertical-align: -0.04em;
+    background: var(--accent);
+    box-shadow: 0 0 18px color-mix(in srgb, var(--accent) 55%, transparent);
+    animation: intro-blink 0.8s steps(1) infinite;
+  }
+
+  .intro-cursor[data-typing] {
+    animation: none;
+  }
+
+  /* Keeps its space, so the name doesn't shift when the cursor leaves. */
+  .intro-cursor[data-off] {
+    visibility: hidden;
+  }
+
+  @keyframes intro-blink {
+    50% {
+      opacity: 0;
+    }
+  }
+
+  .intro-ghost {
+    color: transparent;
+    text-shadow: none;
+  }
+
+  .mission {
+    position: absolute;
+    left: calc(var(--gutter) + 16px);
+    bottom: clamp(28px, 7vh, 64px);
+    padding-left: 16px;
+    border-left: 2px solid var(--accent);
+    font-size: 15px;
+    line-height: 1.75;
+    text-shadow: 0 0 10px color-mix(in srgb, var(--accent) 35%, transparent);
+  }
+
+  .mission-line {
+    margin: 0;
+    white-space: nowrap;
+  }
+
+  .mission-line[hidden] {
+    display: none;
+  }
+
+  /* No border until the first line is typed. */
+  .mission:not(:has(.mission-line:not([hidden]))) {
+    border-color: transparent;
+  }
+
+  .mission-time {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .mission-place {
+    color: var(--muted-foreground);
+  }
+
+  .intro-skip {
+    position: absolute;
+    right: calc(var(--gutter) + 16px);
+    bottom: clamp(28px, 7vh, 64px);
+    margin: 0;
+    font-size: 12px;
+    color: var(--muted-foreground);
+    opacity: 0;
+    animation: intro-hint 0.4s 1.2s forwards;
+  }
+
+  .intro-skip-tap {
+    display: none;
+  }
+
+  @media (hover: none) {
+    .intro-skip-key {
+      display: none;
+    }
+
+    .intro-skip-tap {
+      display: inline;
+    }
+  }
+
+  @keyframes intro-hint {
+    to {
+      opacity: 1;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .mission {
+      font-size: 13px;
+    }
+
+    /* Keep the corner for the caption on narrow screens. */
+    .intro-skip {
+      top: calc(var(--gutter) + 16px);
+      bottom: auto;
+    }
+  }
+</style>

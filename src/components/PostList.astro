@@ -23,7 +23,8 @@ const rows = posts.map(post => ({
 }));
 ---
 
-<ul class:list={["posts", `posts--${variant}`]}>
+<!-- data-boot only acts inside a [data-boot-root] (the homepage pane). -->
+<ul class:list={["posts", `posts--${variant}`]} data-boot="lines">
   {
     rows.map(row => (
       <li class="post">

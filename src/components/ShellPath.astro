@@ -3,6 +3,7 @@
  * Breadcrumb rendered as a shell prompt:
  *   alp@pécs:~/posts/japans-debt-crisis$ cat japans-debt-crisis.md
  * Every directory in the path is a link; the last segment is the current page.
+ * The command is typed out when the page opens (scripts/boot.ts).
  */
 type Segment = { label: string; href?: string };
 
@@ -15,7 +16,7 @@ type Props = {
 const { segments, cmd } = Astro.props;
 ---
 
-<nav class="shellpath" aria-label="Breadcrumb">
+<nav class="shellpath" aria-label="Breadcrumb" data-boot-root>
   <ol class="shellpath-list">
     <li class="shellpath-host" aria-hidden="true">alp@pécs:</li>
     <li><a href="/" class="lk" aria-label="Home">~</a></li>
@@ -37,7 +38,13 @@ const { segments, cmd } = Astro.props;
     }
     <li class="shellpath-sign" aria-hidden="true">$</li>
   </ol>
-  {cmd && <span class="shellpath-cmd">{cmd}</span>}
+  {
+    cmd && (
+      <span class="shellpath-cmd" data-boot="cmd">
+        {cmd}
+      </span>
+    )
+  }
   <span class="cursor" aria-hidden="true"></span>
 </nav>
 

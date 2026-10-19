@@ -1,7 +1,7 @@
 ---
 /**
- * The preview well of a project: a looping recording, a screenshot gallery or
- * a pipeline diagram (see `ProjectMedia` in src/data/projects.ts).
+ * The preview well of a project: a looping recording or a screenshot gallery
+ * (see `ProjectMedia` in src/data/projects.ts).
  *
  * Recordings never autoplay for `prefers-reduced-motion`, pause when scrolled
  * out of view or when their tab is hidden, and always have a pause control.
@@ -32,7 +32,7 @@ const shots =
     : [];
 ---
 
-<figure class="media" data-media={media.type}>
+<figure class="media" data-media={media.type} data-boot="tv">
   <figcaption class="media-bar">
     <span class="media-title">
       <span class="accent" aria-hidden="true">●</span>
@@ -96,35 +96,6 @@ const shots =
       </ul>
     )
   }
-
-  {
-    media.type === "flow" && (
-      <div class="flow">
-        <ol class="flow-steps">
-          {media.steps.map((step, i) => (
-            <li class="flow-step">
-              <div class="flow-box">
-                <span class="flow-label">{step.label}</span>
-                {step.detail && <span class="flow-detail">{step.detail}</span>}
-                {step.parallel && (
-                  <ul class="flow-par">
-                    {step.parallel.map(item => (
-                      <li>{item}</li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-              {i < media.steps.length - 1 && (
-                <span class="flow-arrow" aria-hidden="true">
-                  →
-                </span>
-              )}
-            </li>
-          ))}
-        </ol>
-      </div>
-    )
-  }
 </figure>
 
 <style>
@@ -138,8 +109,7 @@ const shots =
   /* On wide wells every preview gets the recording's 5:3 frame, so switching
      tabs doesn't make the page jump. Narrow wells size to their content. */
   @container (min-width: 640px) {
-    .shots,
-    .flow {
+    .shots {
       aspect-ratio: 5 / 3;
     }
   }
@@ -231,99 +201,6 @@ const shots =
     font-size: 12px;
     line-height: 1.5;
     color: var(--muted-foreground);
-  }
-
-  /* ── Flow diagram: one row of steps; a column when the well is narrow ── */
-  .flow {
-    container-type: inline-size;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 20px;
-    min-height: 260px;
-    box-sizing: border-box;
-    padding: clamp(20px, 3vw, 40px) clamp(12px, 2vw, 28px);
-  }
-
-  .flow-steps {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .flow-step {
-    flex: 1 1 0;
-    min-width: 0;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .flow-step:last-child {
-    flex-grow: 1;
-  }
-
-  .flow-box {
-    flex: 1 1 auto;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    padding: 12px 14px;
-    border: 1px solid var(--border-strong);
-    background: var(--surface);
-  }
-
-  .flow-label {
-    font-weight: 600;
-    line-height: 1.4;
-  }
-
-  .flow-detail {
-    margin-top: 2px;
-    font-size: 13px;
-    line-height: 1.45;
-    color: var(--soft-foreground);
-  }
-
-  .flow-par {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    margin: 8px 0 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .flow-par li {
-    padding: 0 8px;
-    border: 1px solid var(--accent);
-    color: var(--accent);
-    font-size: 13px;
-    line-height: 1.6;
-  }
-
-  .flow-arrow {
-    flex: none;
-    color: var(--accent);
-    font-size: 18px;
-  }
-
-  @container (max-width: 680px) {
-    .flow-steps,
-    .flow-step {
-      flex-direction: column;
-      align-items: stretch;
-    }
-
-    .flow-arrow {
-      align-self: flex-start;
-      margin-left: 14px;
-      transform: rotate(90deg);
-    }
   }
 </style>
 
