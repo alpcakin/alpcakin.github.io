@@ -69,7 +69,8 @@ const structuredData = pubDatetime
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <!-- ?v busts browsers' favicon cache, which kept the old paper-theme "A". -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2" />
     <meta name="theme-color" content="#0a0e0b" />
     <link rel="canonical" href={canonicalURL} />
     <meta name="generator" content={Astro.generator} />
