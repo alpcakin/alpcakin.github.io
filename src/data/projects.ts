@@ -124,6 +124,31 @@ export const projects: Project[] = [
     },
   },
   {
+    slug: "plainfold",
+    title: "plainfold",
+    meta: "open source · Rust + Tauri desktop app",
+    description:
+      "Reads a codebase without running it and draws what happens when a screen opens, a button is pressed or a request arrives, as sequence diagrams that lead down to the exact lines. I wrote the Rust core that drives the language servers and reads TypeScript, Python and Dart.",
+    tags: ["Rust", "Tauri", "TypeScript", "LSP"],
+    links: [
+      { label: "github", href: "https://github.com/alpcakin/plainfold" },
+      { label: "live demo", href: "https://www.alpcakin.com/plainfold/" },
+    ],
+    media: {
+      type: "video",
+      title: "plainfold/demo",
+      sources: [
+        { src: "/media/plainfold/demo.webm", type: "video/webm" },
+        { src: "/media/plainfold/demo.mp4", type: "video/mp4" },
+      ],
+      poster: "/media/plainfold/poster.webp",
+      width: 1200,
+      height: 720,
+      label:
+        "plainfold demo: a form's Save story beside the app's list of screens and controls, the same story with the code of the selected step, a Next.js checkout opened step by step, and a Flutter booking flow with its branches.",
+    },
+  },
+  {
     slug: "bayerpos",
     title: "BayerPOS",
     meta: "co-founder · 2026",
